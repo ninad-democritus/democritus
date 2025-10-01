@@ -1,0 +1,213 @@
+// File Row Component - Ocean Breeze Theme
+// Focused component for individual file table rows
+
+.file-row {
+  transition: var(--transition-colors);
+  border-bottom: 1px solid var(--border-light);
+  
+  &:hover {
+    background-color: var(--color-primary-50);
+  }
+  
+  &.file-item-pending {
+    background-color: var(--bg-card);
+  }
+  
+  &.file-item-uploading {
+    background-color: var(--bg-info-subtle);
+    border-left: 4px solid var(--color-primary-500);
+  }
+  
+  &.file-item-completed {
+    background-color: var(--bg-success-subtle);
+    border-left: 4px solid var(--color-success-500);
+  }
+  
+  &.file-item-error {
+    background-color: var(--bg-error-subtle);
+    border-left: 4px solid var(--color-error-500);
+  }
+}
+
+.file-table-td {
+  padding: var(--spacing-md);
+  font-size: var(--font-size-sm);
+  vertical-align: middle;
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.file-icon {
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  
+  &.file-icon-pending {
+    background-color: var(--color-neutral-100);
+    color: var(--color-neutral-500);
+  }
+  
+  &.file-icon-uploading {
+    background-color: var(--color-primary-100);
+    color: var(--color-primary-600);
+  }
+  
+  &.file-icon-completed {
+    background-color: var(--color-success-100);
+    color: var(--color-success-600);
+  }
+  
+  &.file-icon-error {
+    background-color: var(--color-error-100);
+    color: var(--color-error-600);
+  }
+}
+
+.file-details {
+  flex: 1;
+  overflow: hidden;
+}
+
+.file-name {
+  display: block;
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-path {
+  display: block;
+  font-size: var(--font-size-xs);
+  color: var(--text-quaternary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-size {
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+}
+
+.source-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  
+  &.source-direct {
+    background-color: var(--color-primary-100);
+    color: var(--color-primary-700);
+  }
+  
+  &.source-folder {
+    background-color: var(--color-success-100);
+    color: var(--color-success-700);
+  }
+  
+  &.source-zip {
+    background-color: var(--color-accent-100);
+    color: var(--color-accent-700);
+  }
+  
+  &.source-unknown {
+    background-color: var(--color-neutral-100);
+    color: var(--text-tertiary);
+  }
+}
+
+.file-status {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  
+  &.status-pending {
+    background-color: var(--color-neutral-100);
+    color: var(--text-tertiary);
+  }
+  
+  &.status-uploading {
+    background-color: var(--color-primary-100);
+    color: var(--color-primary-700);
+  }
+  
+  &.status-completed {
+    background-color: var(--color-success-100);
+    color: var(--color-success-700);
+  }
+  
+  &.status-error {
+    background-color: var(--color-error-100);
+    color: var(--color-error-700);
+  }
+}
+
+.progress-indicator,
+.success-indicator,
+.error-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.remove-file-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background-color: var(--color-error-100);
+  color: var(--color-error-600);
+  border: 1px solid var(--color-error-200);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-colors);
+  
+  &:hover {
+    background-color: var(--color-error-500);
+    color: var(--text-inverse);
+    border-color: var(--color-error-600);
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .file-table-td {
+    padding: var(--spacing-sm);
+    font-size: var(--font-size-xs);
+  }
+  
+  .file-info {
+    gap: var(--spacing-xs);
+  }
+  
+  .file-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  
+  .file-name {
+    font-size: var(--font-size-xs);
+  }
+  
+  .remove-file-button {
+    width: 24px;
+    height: 24px;
+  }
+}
+

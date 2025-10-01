@@ -1,0 +1,131 @@
+// File Selector Component - Ocean Breeze Theme
+// Focused component for file/folder selection and drop zone
+
+.file-selection-container {
+  width: 100%;
+}
+
+.file-selection-area {
+  background-color: var(--bg-card);
+  border: 2px dashed var(--border-primary);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-lg);
+  transition: var(--transition-colors);
+  cursor: pointer;
+  
+  &:hover,
+  &.drag-active {
+    border-color: var(--color-primary-500);
+    background-color: var(--color-primary-50);
+  }
+}
+
+.file-selection-icon {
+  width: 4rem;
+  height: 4rem;
+  color: var(--color-primary-500);
+  flex-shrink: 0;
+}
+
+.file-selection-text {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.file-selection-subtext {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.file-input-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-tight);
+  transition: var(--transition-colors), var(--transition-shadow);
+  cursor: pointer;
+  border: 1px solid var(--button-primary-border);
+  text-decoration: none;
+  background-color: var(--button-primary-bg);
+  color: var(--button-primary-text);
+  white-space: nowrap;
+  min-width: 180px;
+  
+  &:hover:not(:disabled) {
+    background-color: var(--button-primary-bg-hover);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  &.options-open {
+    background-color: var(--button-primary-bg-active);
+  }
+}
+
+.selection-options-popup {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: var(--spacing-sm);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-dropdown);
+  overflow: hidden;
+  z-index: 10;
+  min-width: 180px;
+}
+
+.option-button {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  text-align: left;
+  cursor: pointer;
+  transition: var(--transition-colors);
+  
+  &:hover {
+    background-color: var(--color-primary-50);
+    color: var(--text-primary);
+  }
+  
+  &:not(:last-child) {
+    border-bottom: 1px solid var(--border-light);
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .file-selection-area {
+    padding: var(--spacing-lg);
+    
+    .flex {
+      flex-direction: column;
+      text-align: center;
+      gap: var(--spacing-lg);
+    }
+  }
+  
+  .file-selection-icon {
+    width: 3rem;
+    height: 3rem;
+  }
+  
+  .file-input-button {
+    min-width: 160px;
+    font-size: var(--font-size-sm);
+  }
+}
+

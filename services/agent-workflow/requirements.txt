@@ -1,0 +1,17 @@
+fastapi==0.114.2
+uvicorn[standard]==0.30.6
+celery==5.4.0
+redis==5.0.7
+websockets==12.0
+pydantic==2.9.2
+langchain==0.2.16
+langchain-community==0.2.16
+langgraph==0.2.26
+langsmith==0.1.121
+minio==7.2.10
+pandas==2.1.4
+openpyxl==3.1.2
+# Loosen DataHub pin to resolve availability issues on PyPI across platforms
+acryl-datahub>=0.13,<0.15
+
+

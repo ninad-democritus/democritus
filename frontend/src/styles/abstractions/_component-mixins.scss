@@ -1,0 +1,417 @@
+// Component Mixins - Reusable styling patterns that work with any theme
+// These mixins use CSS variables, so they automatically adapt to theme changes
+
+// ===== BUTTON MIXINS =====
+
+@mixin button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-tight);
+  transition: var(--transition-colors), var(--transition-shadow);
+  cursor: pointer;
+  border: 1px solid transparent;
+  text-decoration: none;
+  
+  &:focus {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+@mixin button-primary {
+  @include button-base;
+  background-color: var(--button-primary-bg);
+  color: var(--button-primary-text);
+  border-color: var(--button-primary-border);
+  
+  &:hover:not(:disabled) {
+    background-color: var(--button-primary-bg-hover);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  &:active:not(:disabled) {
+    background-color: var(--button-primary-bg-active);
+    box-shadow: none;
+  }
+}
+
+@mixin button-secondary {
+  @include button-base;
+  background-color: var(--button-secondary-bg);
+  color: var(--button-secondary-text);
+  border-color: var(--button-secondary-border);
+  
+  &:hover:not(:disabled) {
+    background-color: var(--button-secondary-bg-hover);
+  }
+  
+  &:active:not(:disabled) {
+    background-color: var(--button-secondary-bg-active);
+  }
+}
+
+@mixin button-accent {
+  @include button-base;
+  background-color: var(--button-accent-bg);
+  color: var(--button-accent-text);
+  border-color: var(--button-accent-border);
+  
+  &:hover:not(:disabled) {
+    background-color: var(--button-accent-bg-hover);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  &:active:not(:disabled) {
+    background-color: var(--button-accent-bg-active);
+    box-shadow: none;
+  }
+}
+
+@mixin button-danger {
+  @include button-base;
+  background-color: var(--button-danger-bg);
+  color: var(--button-danger-text);
+  border-color: var(--button-danger-bg);
+  
+  &:hover:not(:disabled) {
+    background-color: var(--button-danger-bg-hover);
+    box-shadow: var(--shadow-sm);
+  }
+}
+
+@mixin button-ghost {
+  @include button-base;
+  background-color: transparent;
+  color: var(--text-secondary);
+  border-color: transparent;
+  
+  &:hover:not(:disabled) {
+    background-color: var(--color-neutral-100);
+    color: var(--text-primary);
+  }
+}
+
+// ===== CARD MIXINS =====
+
+@mixin card-base {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+  transition: var(--transition-shadow);
+}
+
+@mixin card-interactive {
+  @include card-base;
+  cursor: pointer;
+  
+  &:hover {
+    box-shadow: var(--shadow-card-hover);
+    background-color: var(--bg-card-hover);
+  }
+}
+
+@mixin card-content {
+  padding: var(--spacing-lg);
+}
+
+@mixin card-header {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-bottom: 1px solid var(--border-light);
+}
+
+@mixin card-footer {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-top: 1px solid var(--border-light);
+}
+
+// ===== STATUS BADGE MIXINS =====
+
+@mixin status-badge-base {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  border: 1px solid transparent;
+}
+
+@mixin status-badge-success {
+  @include status-badge-base;
+  background-color: var(--status-connected-bg);
+  color: var(--status-connected-text);
+  border-color: var(--status-connected-border);
+}
+
+@mixin status-badge-error {
+  @include status-badge-base;
+  background-color: var(--status-disconnected-bg);
+  color: var(--status-disconnected-text);
+  border-color: var(--status-disconnected-border);
+}
+
+@mixin status-badge-warning {
+  @include status-badge-base;
+  background-color: var(--status-warning-bg);
+  color: var(--status-warning-text);
+  border-color: var(--color-warning-200);
+}
+
+@mixin status-badge-info {
+  @include status-badge-base;
+  background-color: var(--status-processing-bg);
+  color: var(--status-processing-text);
+  border-color: var(--color-info-200);
+}
+
+@mixin status-badge-neutral {
+  @include status-badge-base;
+  background-color: var(--color-neutral-100);
+  color: var(--text-tertiary);
+  border-color: var(--border-light);
+}
+
+// ===== ERROR/ALERT PANEL MIXINS =====
+
+@mixin error-panel {
+  background-color: var(--bg-error-subtle);
+  border: 1px solid var(--border-error);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  color: var(--text-error);
+}
+
+@mixin success-panel {
+  background-color: var(--bg-success-subtle);
+  border: 1px solid var(--border-success);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  color: var(--text-success);
+}
+
+@mixin warning-panel {
+  background-color: var(--bg-warning-subtle);
+  border: 1px solid var(--border-warning);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  color: var(--text-warning);
+}
+
+@mixin info-panel {
+  background-color: var(--bg-info-subtle);
+  border: 1px solid var(--color-info-200);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  color: var(--text-info);
+}
+
+// ===== LAYOUT MIXINS =====
+
+@mixin page-background {
+  background: var(--bg-page);
+  min-height: 100vh;
+}
+
+@mixin header-style {
+  background-color: var(--bg-header);
+  border-bottom: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  height: 40px;
+}
+
+@mixin sidebar-style {
+  background-color: var(--bg-sidebar);
+  border-right: 1px solid var(--border-light);
+}
+
+// ===== FORM MIXINS =====
+
+@mixin input-base {
+  display: block;
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  color: var(--text-primary);
+  background-color: var(--bg-card);
+  background-clip: padding-box;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  transition: var(--transition-colors);
+  
+  &::placeholder {
+    color: var(--text-quaternary);
+  }
+  
+  &:focus {
+    outline: none;
+    border-color: var(--color-primary-500);
+    box-shadow: 0 0 0 3px rgb(20 184 166 / 0.1);
+  }
+  
+  &:disabled {
+    background-color: var(--color-neutral-100);
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+@mixin input-error {
+  border-color: var(--color-error-500);
+  
+  &:focus {
+    border-color: var(--color-error-500);
+    box-shadow: 0 0 0 3px rgb(244 63 94 / 0.1);
+  }
+}
+
+// ===== TYPOGRAPHY MIXINS =====
+
+@mixin heading-1 {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  color: var(--text-primary);
+}
+
+@mixin heading-2 {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  color: var(--text-primary);
+}
+
+@mixin heading-3 {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  color: var(--text-primary);
+}
+
+@mixin body-text {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+  color: var(--text-secondary);
+}
+
+@mixin caption-text {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+  color: var(--text-tertiary);
+}
+
+@mixin small-text {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+  color: var(--text-tertiary);
+}
+
+// ===== UTILITY MIXINS =====
+
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin smooth-scroll {
+  scroll-behavior: smooth;
+}
+
+// ===== PROGRESS BAR MIXINS =====
+
+@mixin progress-bar-base {
+  width: 100%;
+  height: 0.5rem;
+  background-color: var(--progress-bg);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+@mixin progress-bar-fill($type: 'success') {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width var(--transition-normal);
+  
+  @if $type == 'success' {
+    background: var(--progress-success);
+  } @else if $type == 'error' {
+    background: var(--progress-error);
+  } @else if $type == 'warning' {
+    background: var(--progress-warning);
+  } @else if $type == 'info' {
+    background: var(--progress-info);
+  }
+}
+
+// ===== LOADING MIXINS =====
+
+@mixin spinner-base($size: 1rem) {
+  width: $size;
+  height: $size;
+  border: 2px solid var(--color-neutral-200);
+  border-top: 2px solid var(--color-primary-500);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// ===== DROPDOWN/MODAL MIXINS =====
+
+@mixin dropdown-base {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-dropdown);
+  padding: var(--spacing-sm);
+  z-index: var(--z-dropdown);
+}
+
+@mixin modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-overlay);
+  z-index: var(--z-modal-backdrop);
+}
+
+@mixin modal-content {
+  background-color: var(--bg-card);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-modal);
+  z-index: var(--z-modal);
+}
+

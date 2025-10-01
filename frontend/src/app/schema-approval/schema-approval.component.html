@@ -1,0 +1,108 @@
+<!-- Loading State -->
+<div *ngIf="!schemaReady && !errorMessage" class="loading-state">
+  <div class="text-center bg-white/80 backdrop-blur-md border border-white/50 rounded-3xl p-12 shadow-2xl max-w-md mx-auto">
+    <div class="loading-spinner"></div>
+    <h3 class="approval-title">{{ statusMessage }}</h3>
+    <p class="approval-subtitle">Processing your data with AI agents...</p>
+    <div class="mt-6 flex justify-center space-x-2">
+      <div class="w-3 h-3 rounded-full animate-bounce" style="background-color: var(--color-primary-400);"></div>
+      <div class="w-3 h-3 rounded-full animate-bounce" style="background-color: var(--color-accent-400); animation-delay: 0.1s;"></div>
+      <div class="w-3 h-3 rounded-full animate-bounce" style="background-color: var(--color-primary-600); animation-delay: 0.2s;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Error State -->
+<div *ngIf="errorMessage" class="error-state">
+  <div class="text-center max-w-md mx-auto">
+    <div class="w-16 h-16 rounded-2xl mx-auto mb-6 flex items-center justify-center" style="background-color: var(--bg-error);">
+      <svg class="w-8 h-8" style="color: var(--text-error);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16c-.77.833.192 2.5 1.732 2.5z"></path>
+      </svg>
+    </div>
+    <h3 class="text-xl font-bold mb-4" style="color: var(--text-error);">Error</h3>
+    <p class="mb-6" style="color: var(--text-secondary);">{{ errorMessage }}</p>
+    <div class="flex space-x-3 justify-center">
+      <button (click)="goBack()" class="back-button" title="Back to Upload">
+        <svg class="w-4 h-4" style="color: var(--text-secondary);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        Back
+      </button>
+      <button (click)="clearError()" class="approve-button" title="Try Again">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+        </svg>
+        Try Again
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Main Schema View -->
+<div *ngIf="schemaReady && unifiedSchema" class="schema-approval-container">
+  <!-- Compact Header -->
+  <div class="approval-header">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-6 h-6 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, var(--color-primary-500), var(--color-accent-500));">
+          <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+          </svg>
+        </div>
+        <h2 class="approval-title">Schema Review & Approval</h2>
+        <div class="success-message">
+          <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+          Ready
+        </div>
+      </div>
+      
+      <div class="flex items-center space-x-2 text-xs" style="color: var(--text-tertiary);">
+        <span>{{ unifiedSchema.entities.length }} entities</span>
+        <span>•</span>
+        <span>{{ unifiedSchema.relationships.length }} relationships</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ER Diagram Content - Takes Remaining Space -->
+  <div class="schema-content">
+    <div class="er-diagram-wrapper">
+      <app-er-diagram 
+        [schemaData]="unifiedSchema"
+        (schemaChanged)="onSchemaChanged($event)">
+      </app-er-diagram>
+    </div>
+  </div>
+
+  <!-- Bottom Actions - Always Visible -->
+  <div class="approval-actions">
+    <button 
+      (click)="goBack()" 
+      class="back-button"
+      title="Back to Upload"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+      </svg>
+    </button>
+    
+    <button 
+      (click)="approveSchema()" 
+      [disabled]="isApproving"
+      class="approve-button"
+      title="Approve Schema and Start Ingestion"
+    >
+      <svg *ngIf="!isApproving" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <svg *ngIf="isApproving" class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 718-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 714 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <span>{{ isApproving ? 'Starting Pipeline...' : 'Approve & Start Ingestion' }}</span>
+    </button>
+  </div>
+</div>

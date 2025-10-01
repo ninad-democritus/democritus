@@ -1,0 +1,111 @@
+// Connection Status Component - Ocean Breeze Theme
+// Focused component for WebSocket connection status
+
+.connection-status-container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.connection-badge {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  transition: var(--transition-colors);
+  
+  &.connection-badge-connected {
+    background-color: var(--status-connected-bg);
+    color: var(--status-connected-text);
+    border: 1px solid var(--status-connected-border);
+  }
+  
+  &.connection-badge-disconnected {
+    background-color: var(--status-disconnected-bg);
+    color: var(--status-disconnected-text);
+    border: 1px solid var(--status-disconnected-border);
+  }
+  
+  &.connection-badge-connecting {
+    background-color: var(--status-processing-bg);
+    color: var(--status-processing-text);
+    border: 1px solid var(--color-info-200);
+  }
+}
+
+.connection-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  transition: var(--transition-colors);
+  
+  &.connection-dot-connected {
+    background-color: var(--status-connected-dot);
+    animation: pulse-success 2s infinite;
+  }
+  
+  &.connection-dot-disconnected {
+    background-color: var(--status-disconnected-dot);
+  }
+  
+  &.connection-dot-connecting {
+    background-color: var(--status-processing-dot);
+    animation: pulse-info 2s infinite;
+  }
+}
+
+.connection-text {
+  user-select: none;
+}
+
+.retry-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background-color: var(--color-primary-100);
+  color: var(--color-primary-600);
+  border: 1px solid var(--color-primary-200);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-colors);
+  
+  &:hover {
+    background-color: var(--color-primary-500);
+    color: var(--text-inverse);
+    border-color: var(--color-primary-600);
+  }
+}
+
+// Animations
+@keyframes pulse-success {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes pulse-info {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .connection-badge {
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-xs);
+  }
+  
+  .connection-text {
+    display: none; // Hide text on mobile, keep just dot
+  }
+  
+  .retry-button {
+    width: 24px;
+    height: 24px;
+  }
+}
+

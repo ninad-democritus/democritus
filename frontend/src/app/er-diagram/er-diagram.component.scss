@@ -1,0 +1,357 @@
+// ER Diagram Component - Ocean Breeze Theme (Refactored)
+// Main orchestrator component using modular sub-components
+
+.er-diagram-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-page-solid);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+// Top Control Actions
+.diagram-actions {
+  position: absolute;
+  top: var(--spacing-lg);
+  right: var(--spacing-lg);
+  display: flex;
+  gap: var(--spacing-sm);
+  z-index: 20;
+}
+
+.control-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: var(--transition-colors), var(--transition-shadow);
+  box-shadow: var(--shadow-sm);
+  
+  &:hover:not(:disabled) {
+    background-color: var(--color-primary-50);
+    border-color: var(--color-primary-300);
+    box-shadow: var(--shadow-card);
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: var(--color-neutral-100);
+  }
+  
+  svg {
+    width: 20px;
+    height: 20px;
+    color: var(--text-secondary);
+  }
+  
+  &.save-btn:not(:disabled) svg {
+    color: var(--color-success-600);
+  }
+  
+  &.reset-btn:not(:disabled) svg {
+    color: var(--color-warning-600);
+  }
+}
+
+// Main Diagram Area
+.diagram-area {
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  overflow: hidden;
+  cursor: grab;
+  position: relative;
+  touch-action: none;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+}
+
+.diagram-area:active {
+  cursor: grabbing;
+}
+
+.diagram-area.dragging {
+  cursor: grabbing;
+}
+
+// SVG Styles
+.er-svg {
+  background: transparent;
+  border: none;
+  width: 100%;
+  height: 100%;
+  display: block;
+  transition: transform 0.1s ease-out;
+  transform-origin: 0 0;
+}
+
+// Layer Organization
+.relationships-layer {
+  // Relationships are drawn first (behind entities)
+}
+
+.entities-layer {
+  // Entities are drawn on top
+}
+
+// Relationship Styles - No Hover Effects
+.relationship-group {
+  cursor: pointer;
+}
+
+.relationship-line {
+  stroke: var(--color-primary-500);
+  stroke-width: 3;
+  stroke-dasharray: none; // Solid line
+}
+
+.relationship-label {
+  pointer-events: none;
+  fill: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+// Entity Styles (inline rendering)
+.entity-group {
+  cursor: pointer;
+  transition: var(--transition-colors);
+}
+
+.entity-rect {
+  fill: var(--bg-card);
+  stroke: var(--border-light);
+  stroke-width: 2;
+  transition: var(--transition-colors);
+  
+  &.selected {
+    stroke: var(--color-primary-500);
+    stroke-width: 3;
+    fill: var(--color-primary-50);
+  }
+  
+  &:hover {
+    stroke: var(--color-primary-400);
+    fill: var(--color-primary-50);
+  }
+}
+
+.entity-header {
+  fill: var(--color-primary-500);
+  stroke: none;
+}
+
+.entity-title {
+  fill: var(--text-inverse);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  text-anchor: start;
+  pointer-events: none;
+  letter-spacing: 0.025em;
+}
+
+.entity-description {
+  fill: var(--text-tertiary);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 400;
+  text-anchor: start;
+  pointer-events: none;
+  letter-spacing: 0.01em;
+}
+
+.add-column-btn {
+  fill: var(--color-success-500);
+  stroke: var(--color-success-600);
+  stroke-width: 1;
+  cursor: pointer;
+  opacity: 1;
+}
+
+.add-column-icon {
+  pointer-events: none;
+  fill: none;
+  stroke: var(--text-inverse);
+  stroke-width: 2;
+}
+
+
+// Column Styles
+.column-row {
+  cursor: pointer;
+  transition: var(--transition-colors);
+}
+
+.column-bg {
+  fill: transparent;
+  stroke: none;
+  transition: var(--transition-colors);
+  
+  &:hover {
+    fill: var(--color-primary-50);
+    stroke: var(--border-light);
+    stroke-width: 1;
+  }
+  
+  &.editing {
+    fill: var(--color-primary-50);
+    stroke: var(--color-primary-300);
+    stroke-width: 1;
+  }
+}
+
+.column-name {
+  fill: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  text-anchor: start;
+  pointer-events: none;
+  letter-spacing: 0.02em;
+}
+
+.column-type {
+  fill: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 400;
+  text-anchor: start;
+  pointer-events: none;
+  letter-spacing: 0.01em;
+}
+
+.key-icon, .required-icon {
+  font-size: 8px;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  pointer-events: none;
+  fill: white;
+}
+
+// Column Action Buttons - Always Visible
+.column-actions {
+  opacity: 1;
+  
+  .action-btn {
+    cursor: pointer;
+    
+    &.edit-btn {
+      fill: var(--color-info-500);
+      stroke: var(--color-info-600);
+      stroke-width: 1;
+    }
+    
+    &.delete-btn {
+      fill: var(--color-error-500);
+      stroke: var(--color-error-600);
+      stroke-width: 1;
+    }
+    
+    &.save-btn {
+      fill: var(--color-success-500);
+      stroke: var(--color-success-600);
+      stroke-width: 1;
+    }
+    
+    &.cancel-btn {
+      fill: var(--color-warning-500);
+      stroke: var(--color-warning-600);
+      stroke-width: 1;
+    }
+  }
+}
+
+.action-icon {
+  pointer-events: none;
+  fill: none;
+  stroke: white;
+  stroke-width: 2;
+}
+
+// Changes Indicator
+.changes-indicator {
+  position: absolute;
+  bottom: var(--spacing-lg);
+  left: var(--spacing-lg);
+  z-index: 20;
+}
+
+.changes-badge {
+  display: flex;
+  align-items: center;
+  background-color: var(--color-warning-100);
+  color: var(--color-warning-700);
+  border: 1px solid var(--color-warning-200);
+  border-radius: var(--radius-full);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  box-shadow: var(--shadow-card);
+  animation: pulse 2s infinite;
+  
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .diagram-actions {
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+  
+  .control-btn {
+    width: 36px;
+    height: 36px;
+    
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+  
+  .changes-indicator {
+    bottom: var(--spacing-md);
+    left: var(--spacing-md);
+  }
+  
+  .changes-badge {
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+}
+
+// Print Styles
+@media print {
+  .er-diagram-container {
+    background: white !important;
+  }
+  
+  .diagram-actions,
+  .changes-indicator {
+    display: none !important;
+  }
+  
+  .diagram-area {
+    background: white !important;
+  }
+}

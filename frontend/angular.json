@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json.schemastore.org/angular-cli",
+  "version": 1,
+  "projects": {
+    "ingestion-ui": {
+      "projectType": "application",
+      "root": "",
+      "sourceRoot": "src",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/ingestion-ui",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": ["src/polyfills.ts"],
+            "tsConfig": "tsconfig.app.json",
+            "assets": ["src/favicon.ico", "src/assets"],
+            "styles": ["src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            }
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "ingestion-ui"
+}
+

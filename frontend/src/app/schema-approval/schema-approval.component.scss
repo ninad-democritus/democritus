@@ -1,0 +1,242 @@
+// Schema Approval Component - Ocean Breeze Theme
+// SCSS styles for the schema approval component
+
+.schema-approval-container {
+  background: var(--bg-page-solid);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; // Prevent page scrollbar
+}
+
+.approval-header {
+  background-color: var(--bg-header);
+  border-bottom: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+  padding: var(--spacing-sm) var(--spacing-lg); // Reduced padding for 8px grid
+  height: 40px;
+  flex-shrink: 0; // Don't compress header
+  
+  .max-w-7xl {
+    max-width: none; // Remove width constraint
+  }
+}
+
+.approval-title {
+  font-size: var(--font-size-base); // Further reduced for 40px height
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  color: var(--text-primary);
+  margin: 0; // Remove bottom margin
+}
+
+.approval-subtitle {
+  font-size: var(--font-size-sm); // Reduced size
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.schema-content {
+  flex: 1; // Take remaining space
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-lg);
+  overflow: hidden; // Prevent content overflow
+}
+
+.er-diagram-wrapper {
+  flex: 1; // Take all available space
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--bg-card);
+  box-shadow: var(--shadow-card);
+  
+  // Ensure ER diagram fills the container
+  ::ng-deep app-er-diagram {
+    height: 100%;
+    display: block;
+  }
+}
+
+.approval-actions {
+  display: flex;
+  justify-content: space-between; // Space out buttons
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background-color: var(--bg-card);
+  border-top: 1px solid var(--border-light);
+  flex-shrink: 0; // Don't compress actions
+  box-shadow: var(--shadow-sm);
+}
+
+.approve-button {
+  background-color: var(--button-accent-bg);
+  color: var(--button-accent-text);
+  border: 1px solid var(--button-accent-border);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-size: var(--font-size-base); // Reduced size
+  font-weight: var(--font-weight-semibold);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-colors), var(--transition-shadow);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  
+  &:hover:not(:disabled) {
+    background-color: var(--button-accent-bg-hover);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  &:active:not(:disabled) {
+    background-color: var(--button-accent-bg-active);
+    box-shadow: none;
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.back-button {
+  background-color: var(--button-secondary-bg);
+  color: var(--button-secondary-text);
+  border: 1px solid var(--button-secondary-border);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-colors);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px; // Fixed square button
+  height: 44px;
+  
+  &:hover:not(:disabled) {
+    background-color: var(--button-secondary-bg-hover);
+  }
+  
+  &:active:not(:disabled) {
+    background-color: var(--button-secondary-bg-active);
+  }
+}
+
+.success-message {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--status-connected-bg);
+  color: var(--status-connected-text);
+  border: 1px solid var(--status-connected-border);
+  border-radius: var(--radius-full);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+// Loading and Error States
+.loading-state {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+  background: var(--bg-page-solid);
+}
+
+.loading-spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid var(--color-neutral-200);
+  border-top: 2px solid var(--color-primary-500);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: var(--spacing-lg);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-state {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+  background: var(--bg-page-solid);
+  
+  .text-center {
+    background-color: var(--bg-error-subtle);
+    border: 1px solid var(--border-error);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-card);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .approval-header {
+    padding: var(--spacing-sm) var(--spacing-md);
+    
+    .flex {
+      flex-direction: column;
+      gap: var(--spacing-sm);
+      align-items: flex-start;
+    }
+  }
+  
+  .approval-title {
+    font-size: var(--font-size-base);
+  }
+  
+  .schema-content {
+    padding: var(--spacing-md);
+  }
+  
+  .approval-actions {
+    padding: var(--spacing-sm) var(--spacing-md);
+    flex-direction: row; // Keep horizontal on mobile
+    justify-content: space-between;
+  }
+  
+  .approve-button {
+    font-size: var(--font-size-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    
+    span {
+      display: none; // Hide text on mobile, keep icon
+    }
+  }
+  
+  .back-button {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Print styles */
+@media print {
+  .schema-approval-container {
+    height: auto !important;
+    background: white !important;
+  }
+  
+  .approval-actions {
+    display: none !important;
+  }
+  
+  .approval-header {
+    background: white !important;
+    box-shadow: none !important;
+    border-bottom: 1px solid var(--border-medium) !important;
+  }
+}

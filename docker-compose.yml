@@ -1,0 +1,357 @@
+services:
+  nginx:
+    image: nginx:1.27-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - frontend
+      - file-upload
+      - agent-workflow
+      - data-pipeline
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+
+  file-upload:
+    build:
+      context: ./services/file-upload
+      dockerfile: Dockerfile
+    environment:
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+      - MINIO_BUCKET=uploads
+      - MINIO_PUBLIC_ENDPOINT=http://localhost:9000
+      - SERVICE_HOST=file-upload
+      - SERVICE_PORT=8000
+    depends_on:
+      - minio
+
+  agent-workflow:
+    build:
+      context: ./services/agent-workflow
+      dockerfile: Dockerfile
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+      - MINIO_BUCKET=uploads
+      - SERVICE_HOST=agent-workflow
+      - SERVICE_PORT=8000
+      - DATAHUB_ENABLED=false
+      - PREFECT_ENABLED=false
+      # LangSmith observability (set your API key)
+      - LANGCHAIN_TRACING_V2=true
+      - LANGCHAIN_PROJECT=democritus-agents
+      - LANGCHAIN_ENDPOINT=https://api.smith.langchain.com
+      - LANGCHAIN_API_KEY=${LANGCHAIN_API_KEY:-}
+      # Ollama LLM configuration
+      - OLLAMA_HOST=http://ollama:11434
+      - OLLAMA_MODEL=llama3.2:3b
+    depends_on:
+      - redis
+      - minio
+      - ollama
+
+  agent-worker:
+    build:
+      context: ./services/agent-workflow
+      dockerfile: Dockerfile
+    command: ["celery", "-A", "app.main:celery_app", "worker", "-l", "info"]
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+      - MINIO_BUCKET=uploads
+      # LangSmith observability (set your API key)
+      - LANGCHAIN_TRACING_V2=true
+      - LANGCHAIN_PROJECT=democritus-agents
+      - LANGCHAIN_ENDPOINT=https://api.smith.langchain.com
+      - LANGCHAIN_API_KEY=${LANGCHAIN_API_KEY:-}
+      # Ollama LLM configuration
+      - OLLAMA_HOST=http://ollama:11434
+      - OLLAMA_MODEL=llama3.2:3b
+    depends_on:
+      - redis
+      - minio
+      - ollama
+
+  data-pipeline:
+    build:
+      context: ./services/data-pipeline
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - PREFECT_API_URL=http://prefect:4200/api
+      - SERVICE_HOST=data-pipeline
+      - SERVICE_PORT=8000
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+      - ICEBERG_REST_URI=http://iceberg-rest:8181
+      - NESSIE_URI=http://nessie:19120/api/v1
+      - AWS_REGION=us-east-1
+      # Logging configuration
+      - LOG_LEVEL=INFO
+      # OpenMetadata configuration
+      - OPENMETADATA_HOST=openmetadata-server
+      - OPENMETADATA_PORT=8585
+      - OPENMETADATA_API_ENDPOINT=http://openmetadata-server:8585/api
+      - OPENMETADATA_AUTH_PROVIDER=jwt
+      - OPENMETADATA_ADMIN_EMAIL=admin@open-metadata.org
+      # JWT Token for ingestion-bot
+      - OPENMETADATA_JWT_TOKEN=eyJraWQiOiJHYjM4OWEtOWY3Ni1nZGpzLWE5MmotMDI0MmJrOTQzNTYiLCJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJvcGVuLW1ldGFkYXRhLm9yZyIsInN1YiI6ImluZ2VzdGlvbi1ib3QiLCJyb2xlcyI6WyJJbmdlc3Rpb25Cb3RSb2xlIl0sImVtYWlsIjoiaW5nZXN0aW9uLWJvdEBvcGVuLW1ldGFkYXRhLm9yZyIsImlzQm90Ijp0cnVlLCJ0b2tlblR5cGUiOiJCT1QiLCJpYXQiOjE3NTkxNjAyMjMsImV4cCI6bnVsbH0.nG6dirZodpn-IgdHXX_mvHmDGVCQ6aeOS-hs4mONQx2hYXsgiWsuKa5B8v2RfVxALDBQWziByJ499W98YVoqLaJZ4pqsqY-VCsRx2au3nrnsRSGwqxvw6JfzB1t5TTWVL1K0CFYioh68r0VxaCqURA7UNEyu9O1VK_CiIKBGIt4k5wqiBBNLJlp0mePYvSsdeUiL7-Fa8uo2OjZAmzb5DtAIbSyKdBUDrhErH5EIH8pr4-ltvj_s_Hi5h_YtOTJykRwDMM4k25jMoEPhTqYyHF4GsjWPiHCEloTv0UO47xSX30o3-OQyI2i67odsftFypvxjOzQJE73Qj-rC3cjR4g
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 300s
+    depends_on:
+      - minio
+      - iceberg-rest
+      - nessie
+      - openmetadata-server
+
+  redis:
+    image: redis:7-alpine
+
+  postgresql:
+    container_name: openmetadata_postgresql
+    image: docker.getcollate.io/openmetadata/postgresql:1.9.11
+    restart: always
+    command: "--work_mem=10MB"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    expose:
+      - 5432
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+    networks:
+      - default
+    healthcheck:
+      test: psql -U postgres -tAc 'select 1' -d openmetadata_db
+      interval: 15s
+      timeout: 10s
+      retries: 10
+
+  minio:
+    image: minio/minio:latest
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - miniodata:/data
+
+  minio-init:
+    image: minio/mc:latest
+    depends_on:
+      - minio
+    entrypoint: /bin/sh -c
+    command: >
+      "mc alias set local http://minio:9000 minioadmin minioadmin &&
+       mc mb -p local/uploads || true &&
+       mc mb -p local/data || true &&
+       mc mb -p local/data/warehouse || true &&
+       mc mb -p local/testupload || true &&
+       mc mb -p local/testdata || true &&
+       mc mb -p local/testdata/warehouse || true &&
+       printf '[{"AllowedOrigin":["*"],"AllowedMethod":["GET","PUT","POST","HEAD","DELETE","OPTIONS"],"AllowedHeader":["*"],"ExposeHeader":["ETag"],"MaxAgeSeconds":3000}]' > /tmp/cors.json &&
+       mc cors set local/uploads /tmp/cors.json &&
+       mc cors set local/data /tmp/cors.json &&
+       mc cors set local/testupload /tmp/cors.json &&
+       mc cors set local/testdata /tmp/cors.json &&
+       mc policy set public local/uploads || true &&
+       mc policy set public local/data || true"
+
+  # Apache Iceberg REST Catalog
+  iceberg-rest:
+    image: tabulario/iceberg-rest:latest
+    ports:
+      - "8181:8181"
+    environment:
+      - CATALOG_WAREHOUSE=s3a://data/warehouse/
+      - CATALOG_IO__IMPL=org.apache.iceberg.aws.s3.S3FileIO
+      - CATALOG_S3_ENDPOINT=http://minio:9000
+      - CATALOG_S3_ACCESS__KEY__ID=minioadmin
+      - CATALOG_S3_SECRET__ACCESS__KEY=minioadmin
+      - CATALOG_S3_PATH__STYLE__ACCESS=true
+      - CATALOG_S3_REGION=us-east-1
+      - AWS_REGION=us-east-1
+    depends_on:
+      - minio
+
+  # Nessie Catalog for Iceberg versioning (works on top of Iceberg)
+  nessie:
+    image: ghcr.io/projectnessie/nessie:0.105.3
+    ports:
+      - "19120:19120"
+    environment:
+      - NESSIE_VERSION_STORE_TYPE=IN_MEMORY
+      - NESSIE_CATALOG_DEFAULT_WAREHOUSE=s3a://data/warehouse/
+      - NESSIE_CATALOG_SERVICE_S3_ENDPOINT=http://minio:9000
+      - NESSIE_CATALOG_SERVICE_S3_ACCESS_KEY_ID=minioadmin
+      - NESSIE_CATALOG_SERVICE_S3_SECRET_ACCESS_KEY=minioadmin
+      - NESSIE_CATALOG_SERVICE_S3_PATH_STYLE_ACCESS=true
+    depends_on:
+      - minio
+      - iceberg-rest
+
+  # Local LLM runtime
+  ollama:
+    image: ollama/ollama:latest
+    volumes:
+      - ollama:/root/.ollama
+    ports:
+      - "11434:11434"
+    healthcheck:
+      test: ["CMD", "bash", "-lc", "curl -sf http://localhost:11434/api/tags || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # OpenMetadata Migration Container (must run first)
+  execute-migrate-all:
+    container_name: execute_migrate_all
+    image: docker.getcollate.io/openmetadata/server:1.9.11
+    command: "./bootstrap/openmetadata-ops.sh migrate"
+    environment:
+      # Database configuration using PostgreSQL
+      - DB_DRIVER_CLASS=org.postgresql.Driver
+      - DB_SCHEME=postgresql
+      - DB_USE_SSL=false
+      - DB_HOST=postgresql
+      - DB_PORT=5432
+      - DB_USER=openmetadata_user
+      - DB_PASSWORD=openmetadata_password
+      - DB_DATABASE=openmetadata_db
+      # Elasticsearch configuration
+      - ELASTICSEARCH_HOST=elasticsearch
+      - ELASTICSEARCH_PORT=9200
+      - ELASTICSEARCH_SCHEME=http
+      - ELASTICSEARCH_USERNAME=""
+      - ELASTICSEARCH_PASSWORD=""
+      # Migration settings
+      - MIGRATION_LIMIT_PARAM=1200
+      - LOG_LEVEL=INFO
+      # Basic auth configuration according to documentation
+      - AUTHORIZER_CLASS_NAME=org.openmetadata.service.security.DefaultAuthorizer
+      - AUTHORIZER_REQUEST_FILTER=org.openmetadata.service.security.JwtFilter
+      - AUTHORIZER_ADMIN_PRINCIPALS=[admin]
+      - AUTHORIZER_INGESTION_PRINCIPALS=[ingestion-bot]
+      - AUTHORIZER_PRINCIPAL_DOMAIN="open-metadata.org"
+      - AUTHENTICATION_PROVIDER=basic
+      - AUTHENTICATION_PUBLIC_KEYS=[http://openmetadata-server:8585/api/v1/system/config/jwks]
+      - AUTHENTICATION_AUTHORITY=http://openmetadata-server:8585
+      - AUTHENTICATION_CLIENT_ID=""
+      - AUTHENTICATION_CALLBACK_URL=""
+      # JWT Token Configuration for ingestion-bot (using default keys for testing)
+      - JWT_ISSUER=http://openmetadata-server:8585
+      - JWT_KEY_ID=Gb389a-9f76-gdjs-a92j-0242bk94356
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+
+  # OpenMetadata Server (runs after migration)
+  openmetadata-server:
+    container_name: openmetadata_server
+    image: docker.getcollate.io/openmetadata/server:1.9.11
+    ports:
+      - "8585:8585"
+      - "8586:8586"
+    environment:
+      # Database configuration using PostgreSQL
+      - DB_DRIVER_CLASS=org.postgresql.Driver
+      - DB_SCHEME=postgresql
+      - DB_USE_SSL=false
+      - DB_HOST=postgresql
+      - DB_PORT=5432
+      - DB_USER=openmetadata_user
+      - DB_PASSWORD=openmetadata_password
+      - DB_DATABASE=openmetadata_db
+      # Elasticsearch configuration
+      - ELASTICSEARCH_HOST=elasticsearch
+      - ELASTICSEARCH_PORT=9200
+      - ELASTICSEARCH_SCHEME=http
+      - ELASTICSEARCH_USERNAME=""
+      - ELASTICSEARCH_PASSWORD=""
+      # Server configuration
+      - SERVER_HOST_API_URL=http://openmetadata-server:8585/api
+      - SERVER_WEB_URL=http://localhost:8585
+      - LOG_LEVEL=INFO
+      # Basic auth configuration according to documentation
+      - AUTHORIZER_CLASS_NAME=org.openmetadata.service.security.DefaultAuthorizer
+      - AUTHORIZER_REQUEST_FILTER=org.openmetadata.service.security.JwtFilter
+      - AUTHORIZER_ADMIN_PRINCIPALS=[admin]
+      - AUTHORIZER_INGESTION_PRINCIPALS=[ingestion-bot]
+      - AUTHORIZER_PRINCIPAL_DOMAIN="open-metadata.org"
+      - AUTHENTICATION_PROVIDER=basic
+      - AUTHENTICATION_PUBLIC_KEYS=[http://openmetadata-server:8585/api/v1/system/config/jwks]
+      - AUTHENTICATION_AUTHORITY=http://openmetadata-server:8585
+      - AUTHENTICATION_CLIENT_ID=""
+      - AUTHENTICATION_CALLBACK_URL=""
+      # JWT Token Configuration for ingestion-bot (using default keys for testing)
+      - JWT_ISSUER=http://openmetadata-server:8585
+      - JWT_KEY_ID=Gb389a-9f76-gdjs-a92j-0242bk94356
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      execute-migrate-all:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8586/healthcheck"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+
+  # Elasticsearch for OpenMetadata search
+  elasticsearch:
+    container_name: openmetadata_elasticsearch  
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.4
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: "curl -s http://localhost:9200/_cluster/health?pretty | grep status | grep -qE 'green|yellow' || exit 1"
+      interval: 15s
+      timeout: 10s
+      retries: 10
+
+  # Removed standalone Airflow - workflow logic integrated into data-pipeline service
+
+
+  # Optional local LLM runtime (comment out if using external API)
+  # (already enabled above)
+
+volumes:
+  postgresql_data:
+  miniodata:
+  ollama:
+  elasticsearch_data:
+
+

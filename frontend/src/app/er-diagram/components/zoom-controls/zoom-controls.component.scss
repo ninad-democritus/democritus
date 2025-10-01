@@ -1,0 +1,64 @@
+// Zoom Controls Component - Ocean Breeze Theme
+// Focused component for diagram zoom and viewport controls
+
+.zoom-controls {
+  position: absolute;
+  bottom: var(--spacing-lg);
+  right: var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-sm);
+  box-shadow: var(--shadow-card);
+  z-index: 10;
+}
+
+.zoom-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background-color: var(--button-secondary-bg);
+  color: var(--button-secondary-text);
+  border: 1px solid var(--button-secondary-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-colors);
+  
+  &:hover:not(:disabled) {
+    background-color: var(--button-secondary-bg-hover);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  &:active:not(:disabled) {
+    background-color: var(--button-secondary-bg-active);
+    box-shadow: none;
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.zoom-level {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-secondary);
+  padding: 0 var(--spacing-sm);
+  min-width: 40px;
+  text-align: center;
+  white-space: nowrap;
+}
+

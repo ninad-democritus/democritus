@@ -1,0 +1,121 @@
+// File List Component - Ocean Breeze Theme
+// Focused component for displaying selected files in a table
+
+.file-list-container {
+  background-color: var(--bg-card);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-light);
+  margin: var(--spacing-lg) 0;
+}
+
+.file-list-header {
+  background-color: var(--color-primary-50);
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+  h3 {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    margin: 0;
+  }
+}
+
+.file-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.file-count-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  background-color: var(--color-primary-100);
+  color: var(--color-primary-700);
+  border: 1px solid var(--color-primary-200);
+}
+
+.clear-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background-color: var(--color-error-100);
+  color: var(--color-error-600);
+  border: 1px solid var(--color-error-200);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-colors);
+  
+  &:hover {
+    background-color: var(--color-error-500);
+    color: var(--text-inverse);
+    border-color: var(--color-error-600);
+  }
+}
+
+.file-list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.file-table-header {
+  background-color: var(--color-neutral-50);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.file-table-th {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--border-light);
+  text-align: left;
+  
+  &:last-child {
+    text-align: center;
+  }
+}
+
+.file-table-body {
+  background-color: var(--bg-card);
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .file-list-header {
+    padding: var(--spacing-md);
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    align-items: flex-start;
+  }
+  
+  .file-actions {
+    align-self: stretch;
+    justify-content: space-between;
+  }
+  
+  .file-list {
+    max-height: 300px;
+  }
+  
+  .file-table-th {
+    padding: var(--spacing-sm);
+    font-size: var(--font-size-xs);
+  }
+}
+

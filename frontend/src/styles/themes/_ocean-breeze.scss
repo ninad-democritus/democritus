@@ -1,0 +1,219 @@
+// Ocean Breeze Theme
+// Vibrant yet subtle color palette for a modern, fresh UI experience
+
+:root {
+  // ===== PRIMARY BRAND COLORS =====
+  // Teal/Cyan spectrum - main brand colors
+  --color-primary-50: #f0fdfa;    // Very light mint - page backgrounds, subtle highlights
+  --color-primary-100: #ccfbf1;   // Light mint - card backgrounds, sections
+  --color-primary-200: #99f6e4;   // Soft teal - borders, dividers, inactive states
+  --color-primary-500: #14b8a6;   // Rich teal - primary buttons, links, active states
+  --color-primary-600: #0d9488;   // Deep teal - hover states, pressed buttons
+  --color-primary-700: #0f766e;   // Darker teal - text on light backgrounds
+  --color-primary-800: #115e59;   // Very dark teal
+  --color-primary-900: #134e4a;   // Very dark teal - emphasis text, headings
+
+  // ===== ACCENT COLORS =====
+  // Warm orange - for CTAs and important actions
+  --color-accent-50: #fff7ed;     // Very light peach
+  --color-accent-100: #fed7aa;    // Light peach - accent backgrounds
+  --color-accent-500: #f97316;    // Vibrant orange - CTA buttons, notifications
+  --color-accent-600: #ea580c;    // Deep orange - hover states, active accents
+  --color-accent-700: #c2410c;    // Darker orange - text on light accent backgrounds
+
+  // ===== NEUTRAL COLORS =====
+  // Blue-gray spectrum - replaces boring gray
+  --color-neutral-50: #f8fafc;    // Almost white - page backgrounds
+  --color-neutral-100: #f1f5f9;   // Very light blue-gray - card backgrounds
+  --color-neutral-200: #e2e8f0;   // Light blue-gray - borders, separators
+  --color-neutral-300: #cbd5e1;   // Medium-light blue-gray - placeholders
+  --color-neutral-400: #94a3b8;   // Medium blue-gray - disabled text
+  --color-neutral-500: #64748b;   // Balanced blue-gray - secondary text
+  --color-neutral-600: #475569;   // Medium-dark blue-gray - body text
+  --color-neutral-700: #334155;   // Dark blue-gray - primary text
+  --color-neutral-800: #1e293b;   // Very dark blue-gray - headings
+  --color-neutral-900: #0f172a;   // Almost black - emphasis text
+
+  // ===== STATUS COLORS =====
+  // Success states - emerald green
+  --color-success-50: #ecfdf5;
+  --color-success-100: #d1fae5;   // Light success backgrounds
+  --color-success-500: #10b981;   // Success indicators, checkmarks
+  --color-success-600: #059669;   // Success hover states
+  --color-success-700: #047857;   // Success text
+  --color-success-800: #065f46;   // Dark success text
+
+  // Error states - rose pink (less harsh than pure red)
+  --color-error-50: #fdf2f8;      // Very light rose
+  --color-error-100: #fce7f3;     // Light error backgrounds
+  --color-error-200: #fbcfe8;     // Error borders
+  --color-error-500: #f43f5e;     // Error indicators, alerts
+  --color-error-600: #e11d48;     // Error hover states
+  --color-error-700: #be185d;     // Error text
+
+  // Warning states - amber/yellow
+  --color-warning-50: #fffbeb;
+  --color-warning-100: #fef3c7;   // Light warning backgrounds
+  --color-warning-200: #fde68a;   // Warning borders
+  --color-warning-500: #f59e0b;   // Warning indicators
+  --color-warning-600: #d97706;   // Warning hover states
+  --color-warning-700: #b45309;   // Warning text
+
+  // Info states - sky blue
+  --color-info-50: #f0f9ff;
+  --color-info-100: #e0f2fe;      // Light info backgrounds
+  --color-info-200: #bae6fd;      // Info borders
+  --color-info-500: #0ea5e9;      // Info indicators
+  --color-info-600: #0284c7;      // Info hover states
+  --color-info-700: #0369a1;      // Info text
+
+  // ===== SEMANTIC VARIABLES =====
+  
+  // Background Colors
+  --bg-page: linear-gradient(135deg, var(--color-primary-50) 0%, var(--color-neutral-50) 100%);
+  --bg-page-solid: var(--color-neutral-50);
+  --bg-card: #ffffff;
+  --bg-card-hover: var(--color-primary-50);
+  --bg-header: var(--color-primary-50);
+  --bg-sidebar: var(--color-neutral-100);
+  --bg-overlay: rgba(15, 23, 42, 0.5);
+  
+  // Status backgrounds
+  --bg-success: var(--color-success-100);
+  --bg-success-subtle: var(--color-success-50);
+  --bg-error: var(--color-error-100);
+  --bg-error-subtle: var(--color-error-50);
+  --bg-warning: var(--color-warning-100);
+  --bg-warning-subtle: var(--color-warning-50);
+  --bg-info: var(--color-info-100);
+  --bg-info-subtle: var(--color-info-50);
+
+  // Text Colors  
+  --text-primary: var(--color-neutral-900);
+  --text-secondary: var(--color-neutral-700);
+  --text-tertiary: var(--color-neutral-500);
+  --text-quaternary: var(--color-neutral-400);
+  --text-inverse: #ffffff;
+  --text-accent: var(--color-accent-600);
+  --text-link: var(--color-primary-500);
+  --text-success: var(--color-success-800);
+  --text-error: var(--color-error-700);
+  --text-warning: var(--color-warning-700);
+  --text-info: var(--color-info-700);
+
+  // Button Colors
+  --button-primary-bg: var(--color-primary-500);
+  --button-primary-bg-hover: var(--color-primary-600);
+  --button-primary-bg-active: var(--color-primary-700);
+  --button-primary-text: var(--text-inverse);
+  --button-primary-border: var(--color-primary-500);
+
+  --button-secondary-bg: var(--color-neutral-200);
+  --button-secondary-bg-hover: var(--color-neutral-300);
+  --button-secondary-bg-active: var(--color-neutral-400);
+  --button-secondary-text: var(--text-secondary);
+  --button-secondary-border: var(--color-neutral-200);
+
+  --button-accent-bg: var(--color-accent-500);
+  --button-accent-bg-hover: var(--color-accent-600);
+  --button-accent-bg-active: var(--color-accent-700);
+  --button-accent-text: var(--text-inverse);
+  --button-accent-border: var(--color-accent-500);
+
+  --button-danger-bg: var(--color-error-500);
+  --button-danger-bg-hover: var(--color-error-600);
+  --button-danger-text: var(--text-inverse);
+
+  // Status Indicators
+  --status-connected-bg: var(--color-success-100);
+  --status-connected-text: var(--color-success-800);
+  --status-connected-border: var(--color-success-200);
+  --status-connected-dot: var(--color-success-500);
+  
+  --status-disconnected-bg: var(--color-error-100);
+  --status-disconnected-text: var(--color-error-700);
+  --status-disconnected-border: var(--color-error-200);
+  --status-disconnected-dot: var(--color-error-500);
+
+  --status-warning-bg: var(--color-warning-100);
+  --status-warning-text: var(--color-warning-700);
+
+  --status-processing-bg: var(--color-info-100);
+  --status-processing-text: var(--color-info-700);
+
+  // Progress Colors
+  --progress-bg: var(--color-neutral-200);
+  --progress-success: linear-gradient(90deg, var(--color-primary-500), var(--color-primary-600));
+  --progress-error: linear-gradient(90deg, var(--color-error-500), var(--color-error-700));
+  --progress-warning: linear-gradient(90deg, var(--color-warning-500), var(--color-warning-600));
+  --progress-info: linear-gradient(90deg, var(--color-info-500), var(--color-info-600));
+
+  // Borders & Shadows
+  --border-light: var(--color-neutral-200);
+  --border-medium: var(--color-neutral-300);
+  --border-primary: var(--color-primary-200);
+  --border-success: var(--color-success-200);
+  --border-error: var(--color-error-200);
+  --border-warning: var(--color-warning-200);
+  
+  --shadow-sm: 0 1px 2px 0 rgb(15 23 42 / 0.05);
+  --shadow-card: 0 4px 6px -1px rgb(15 23 42 / 0.1), 0 2px 4px -2px rgb(15 23 42 / 0.1);
+  --shadow-card-hover: 0 10px 15px -3px rgb(15 23 42 / 0.1), 0 4px 6px -4px rgb(15 23 42 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(15 23 42 / 0.1), 0 4px 6px -4px rgb(15 23 42 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(15 23 42 / 0.1), 0 10px 10px -5px rgb(15 23 42 / 0.04);
+  --shadow-dropdown: 0 20px 25px -5px rgb(15 23 42 / 0.1), 0 10px 10px -5px rgb(15 23 42 / 0.04);
+  --shadow-modal: 0 25px 50px -12px rgb(15 23 42 / 0.25);
+
+  // Typography
+  --font-size-xs: 0.75rem;        // 12px
+  --font-size-sm: 0.875rem;       // 14px  
+  --font-size-base: 1rem;         // 16px
+  --font-size-lg: 1.125rem;       // 18px
+  --font-size-xl: 1.25rem;        // 20px
+  --font-size-2xl: 1.5rem;        // 24px
+  --font-size-3xl: 1.875rem;      // 30px
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  // Spacing
+  --spacing-xs: 0.25rem;          // 4px
+  --spacing-sm: 0.5rem;           // 8px
+  --spacing-md: 0.75rem;          // 12px
+  --spacing-lg: 1rem;             // 16px
+  --spacing-xl: 1.5rem;           // 24px
+  --spacing-2xl: 2rem;            // 32px
+  --spacing-3xl: 3rem;            // 48px
+
+  // Border Radius
+  --radius-sm: 0.25rem;           // 4px
+  --radius-md: 0.375rem;          // 6px
+  --radius-lg: 0.5rem;            // 8px
+  --radius-xl: 0.75rem;           // 12px
+  --radius-2xl: 1rem;             // 16px
+  --radius-full: 9999px;
+
+  // Z-index
+  --z-dropdown: 1000;
+  --z-sticky: 1010;
+  --z-modal-backdrop: 1020;
+  --z-modal: 1030;
+  --z-tooltip: 1040;
+
+  // Font Families
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  --font-mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Source Code Pro', monospace;
+  --font-serif: 'Georgia', 'Times New Roman', 'Times', serif;
+
+  // Transitions
+  --transition-colors: color 150ms ease-in-out, background-color 150ms ease-in-out, border-color 150ms ease-in-out;
+  --transition-shadow: box-shadow 150ms ease-in-out;
+  --transition-transform: transform 150ms ease-in-out;
+  --transition-normal: all 150ms ease-in-out;
+}

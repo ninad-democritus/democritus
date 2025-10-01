@@ -1,0 +1,173 @@
+// Status Summary Component - Ocean Breeze Theme
+// Focused component for pipeline status and metadata
+
+.status-summary-container {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.run-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.run-detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.detail-label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.detail-value {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  
+  &.detail-mono {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+  }
+  
+  // Status-specific colors
+  &.status-completed {
+    color: var(--color-success-600);
+  }
+  
+  &.status-failed {
+    color: var(--color-error-600);
+  }
+  
+  &.status-running {
+    color: var(--color-primary-600);
+  }
+  
+  &.status-pending {
+    color: var(--text-secondary);
+  }
+}
+
+.status-message {
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  
+  &.message-success {
+    background-color: var(--bg-success-subtle);
+    border-color: var(--border-success);
+    color: var(--text-success);
+  }
+  
+  &.message-error {
+    background-color: var(--bg-error-subtle);
+    border-color: var(--border-error);
+    color: var(--text-error);
+  }
+  
+  &.message-info {
+    background-color: var(--bg-info-subtle);
+    border-color: var(--color-info-200);
+    color: var(--text-info);
+  }
+  
+  &.message-neutral {
+    background-color: var(--color-neutral-50);
+    border-color: var(--border-light);
+    color: var(--text-secondary);
+  }
+}
+
+.message-content {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.message-icon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+.message-text {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+}
+
+.error-details {
+  background-color: var(--bg-error-subtle);
+  border: 1px solid var(--border-error);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+}
+
+.error-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+}
+
+.error-title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-error);
+}
+
+.error-content {
+  font-size: var(--font-size-sm);
+  color: var(--text-error);
+  line-height: var(--line-height-relaxed);
+  font-family: var(--font-mono);
+  background-color: rgba(255, 255, 255, 0.5);
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-error-200);
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .status-summary-container {
+    padding: var(--spacing-md);
+  }
+  
+  .run-info {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+  }
+  
+  .run-detail {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-xs) 0;
+    border-bottom: 1px solid var(--border-light);
+    
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+  
+  .detail-label {
+    font-size: var(--font-size-xs);
+  }
+  
+  .detail-value {
+    font-size: var(--font-size-xs);
+    text-align: right;
+  }
+}
+

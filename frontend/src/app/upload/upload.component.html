@@ -1,0 +1,41 @@
+<!-- Upload Container -->
+<div class="upload-container">
+  <!-- Page Header -->
+  <div class="upload-page-header">
+    <div class="header-content">
+      <div class="header-text">
+        <h1 class="upload-title">Multi-File Data Upload</h1>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="upload-content">
+    <div class="content-wrapper">
+      <!-- File Selector -->
+      <app-file-selector
+        (filesSelected)="onFilesSelected($event)">
+      </app-file-selector>
+      
+      <!-- File List -->
+      <app-file-list
+        [files]="selectedFiles"
+        (removeFile)="onRemoveFile($event)"
+        (clearAll)="onClearAllFiles()">
+      </app-file-list>
+      
+      <!-- Upload Progress -->
+      <app-upload-progress
+        [isVisible]="hasFiles"
+        [isUploading]="isUploading"
+        [progress]="uploadProgress"
+        [totalFiles]="totalFiles"
+        [completedFiles]="completedFiles"
+        [errorCount]="errorCount"
+        (uploadStart)="onStartUpload()"
+        (uploadCancel)="onCancelUpload()"
+        (proceedNext)="onProceedNext()">
+      </app-upload-progress>
+    </div>
+  </div>
+</div>

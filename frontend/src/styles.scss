@@ -1,0 +1,207 @@
+// Global Styles - Ocean Breeze Theme
+// This file is the main entry point for all styling
+
+// ===== TAILWIND IMPORTS =====
+// Import Tailwind's base, components, and utilities
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// ===== THEME SYSTEM =====
+// Import our complete theme system
+@import 'styles/main';
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/* Enhanced Global Styles */
+html {
+  font-family: var(--font-sans);
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-page);
+  color: var(--text-primary);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  line-height: var(--line-height-normal);
+}
+
+/* Enhanced Tailwind-compatible theme classes */
+
+/* Replace Tailwind's gradient classes with theme-aware versions */
+.gradient-text {
+  background: linear-gradient(to right, var(--color-primary-600), var(--color-accent-500));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Enhanced button styles using theme variables */
+.btn-vibrant {
+  @include button-accent;
+  background: linear-gradient(to right, var(--color-primary-500), var(--color-accent-500));
+  font-weight: var(--font-weight-semibold);
+  padding: var(--spacing-md) var(--spacing-xl);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  transition: var(--transition-colors), var(--transition-transform), var(--transition-shadow);
+  transform: translateY(0);
+  
+  &:hover:not(:disabled) {
+    background: linear-gradient(to right, var(--color-primary-600), var(--color-accent-600));
+    box-shadow: var(--shadow-xl);
+    transform: translateY(-2px) scale(1.02);
+  }
+}
+
+.btn-outline-vibrant {
+  @include button-secondary;
+  border: 2px solid var(--color-primary-500);
+  color: var(--color-primary-600);
+  font-weight: var(--font-weight-semibold);
+  padding: var(--spacing-md) var(--spacing-xl);
+  border-radius: var(--radius-xl);
+  transition: var(--transition-colors), var(--transition-transform);
+  
+  &:hover:not(:disabled) {
+    background-color: var(--color-primary-500);
+    color: var(--text-inverse);
+    box-shadow: var(--shadow-md);
+    transform: scale(1.05);
+  }
+}
+
+.btn-secondary {
+  @include button-secondary;
+  font-weight: var(--font-weight-medium);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-lg);
+  
+  &:hover:not(:disabled) {
+    box-shadow: var(--shadow-sm);
+    transform: scale(1.05);
+  }
+}
+
+/* Enhanced card styles */
+.card-vibrant {
+  @include card-base;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-xl);
+  transition: var(--transition-shadow), var(--transition-transform);
+  
+  &:hover {
+    box-shadow: var(--shadow-xl);
+    transform: scale(1.02);
+  }
+}
+
+/* Glass morphism effect - theme aware */
+.glass {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-2xl);
+}
+
+/* Enhanced focus styles */
+.focus-vibrant {
+  outline: none;
+  
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgb(20 184 166 / 0.2);
+    border-color: var(--color-primary-500);
+  }
+}
+
+/* Ocean Breeze specific enhancements */
+.ocean-gradient {
+  background: linear-gradient(135deg, var(--color-primary-50), var(--color-neutral-50));
+}
+
+.ocean-card {
+  @include card-base;
+  background: linear-gradient(135deg, rgba(240, 253, 250, 0.8), rgba(255, 255, 255, 0.9));
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--color-primary-200);
+}
+
+.ocean-button {
+  @include button-primary;
+  background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-600));
+  box-shadow: 0 4px 20px rgb(20 184 166 / 0.3);
+  
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--color-primary-600), var(--color-primary-700));
+    box-shadow: 0 8px 30px rgb(20 184 166 / 0.4);
+  }
+}
+
+.accent-button {
+  @include button-accent;
+  background: linear-gradient(135deg, var(--color-accent-500), var(--color-accent-600));
+  box-shadow: 0 4px 20px rgb(247 115 22 / 0.3);
+  
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--color-accent-600), var(--color-accent-700));
+    box-shadow: 0 8px 30px rgb(247 115 22 / 0.4);
+  }
+}
+
+/* Status indicator styles */
+.status-connected {
+  @include status-badge-success;
+}
+
+.status-disconnected {
+  @include status-badge-error;
+}
+
+.status-processing {
+  @include status-badge-info;
+}
+
+/* Responsive enhancements */
+@media (max-width: 768px) {
+  .btn-vibrant,
+  .btn-outline-vibrant {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    font-size: var(--font-size-sm);
+  }
+  
+  .card-vibrant {
+    margin: var(--spacing-sm);
+    border-radius: var(--radius-xl);
+  }
+}
+
+/* Print styles */
+@media print {
+  .gradient-text {
+    background: none !important;
+    color: var(--text-primary) !important;
+  }
+  
+  .card-vibrant,
+  .glass {
+    background: white !important;
+    backdrop-filter: none !important;
+    border: 1px solid var(--border-medium) !important;
+    box-shadow: none !important;
+  }
+}
