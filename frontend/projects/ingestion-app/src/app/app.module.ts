@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AppComponent } from './app.component';
 import { routes } from './app.routes';
+import { AppHeaderComponent } from 'shared-ui';
 
 // Import all feature components
 import { UploadComponent } from './upload/upload.component';
@@ -51,7 +52,8 @@ import { ZoomControlsComponent } from './er-diagram/components/zoom-controls/zoo
     CommonModule,
     HttpClientModule,
     FormsModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    AppHeaderComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

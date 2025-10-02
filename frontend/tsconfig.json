@@ -19,6 +19,9 @@
     "target": "es2022",
     "useDefineForClassFields": false,
     "paths": {
+      "shared-ui": [
+        "./dist/shared-ui"
+      ],
       "ui-kit": [
         "./dist/ui-kit"
       ]
