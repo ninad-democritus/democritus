@@ -1,37 +1,15 @@
-<div class="min-h-screen bg-page-solid">
-  <!-- Navigation Header -->
-  <header class="header shadow-card">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center h-16">
-        <div class="flex items-center">
-          <h1 class="text-2xl font-bold text-primary-600">Democritus</h1>
-          <span class="ml-2 text-sm text-secondary">Data Platform</span>
-        </div>
-        
-        <nav class="flex space-x-4">
-          <a 
-            routerLink="/ingestion" 
-            routerLinkActive="text-primary-600 border-b-2 border-primary-600"
-            class="px-3 py-2 text-sm font-medium text-secondary hover:text-primary-600 transition-colors"
-          >
-            Data Ingestion
-        </a>
-        <a
-            routerLink="/ai-canvas" 
-            routerLinkActive="text-primary-600 border-b-2 border-primary-600"
-            class="px-3 py-2 text-sm font-medium text-secondary hover:text-primary-600 transition-colors"
-          >
-            AI Canvas
-          </a>
-        </nav>
-      </div>
-    </div>
-  </header>
+<div class="host-container">
+  <!-- Global Sidebar for MFE Navigation -->
+  <lib-app-sidebar></lib-app-sidebar>
 
-  <!-- Main Content Area -->
-  <main class="main-app-content max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
-    <router-outlet></router-outlet>
-  </main>
+  <!-- Main Layout (offset by sidebar) -->
+  <div class="main-layout">
+    <!-- Global Header with User Menu & Notifications -->
+    <lib-app-header></lib-app-header>
+
+    <!-- Content Area for Remote Apps -->
+    <main class="content-area">
+      <router-outlet></router-outlet>
+    </main>
   </div>
-
-
+</div>

@@ -12,6 +12,10 @@ RUN npm ci
 # Copy source code
 COPY . .
 
+# Build shared libraries first (required dependencies)
+RUN npm run ng -- build ui-kit
+RUN npm run ng -- build shared-ui
+
 # Build the host-shell application
 RUN npm run ng -- build host-shell
 
