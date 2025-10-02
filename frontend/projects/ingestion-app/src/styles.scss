@@ -1,0 +1,7 @@
+/* Tailwind directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import shared UI Kit styles */
+@import '../../../libs/ui-kit/src/lib/styles/global-imports';

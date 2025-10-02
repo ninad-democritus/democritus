@@ -18,10 +18,14 @@
     "resolveJsonModule": true,
     "target": "es2022",
     "useDefineForClassFields": false,
+    "paths": {
+      "ui-kit": [
+        "./dist/ui-kit"
+      ]
+    },
     "lib": [
       "es2022",
       "dom"
     ]
   }
 }
-

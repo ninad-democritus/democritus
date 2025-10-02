@@ -6,15 +6,38 @@ services:
     volumes:
       - ./infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-      - frontend
+      - frontend-host
       - file-upload
       - agent-workflow
       - data-pipeline
+    restart: unless-stopped
 
-  frontend:
+  # MFE Host Application (Shell)
+  frontend-host:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
+      dockerfile: projects/host-shell/Dockerfile
+    ports:
+      - "4200:80"
+    environment:
+      - REMOTE_INGESTION_URL=http://localhost:4201
+      - REMOTE_AI_CANVAS_URL=http://localhost:4202
+
+  # MFE Remote: Ingestion Application
+  frontend-ingestion:
+    build:
+      context: ./frontend
+      dockerfile: projects/ingestion-app/Dockerfile
+    ports:
+      - "4201:80"
+
+  # MFE Remote: AI Canvas Application
+  frontend-ai-canvas:
+    build:
+      context: ./frontend
+      dockerfile: projects/ai-canvas/Dockerfile
+    ports:
+      - "4202:80"
 
   file-upload:
     build:
@@ -25,7 +48,7 @@ services:
       - MINIO_ACCESS_KEY=minioadmin
       - MINIO_SECRET_KEY=minioadmin
       - MINIO_BUCKET=uploads
-      - MINIO_PUBLIC_ENDPOINT=http://localhost:9000
+      - MINIO_PUBLIC_ENDPOINT=http://localhost
       - SERVICE_HOST=file-upload
       - SERVICE_PORT=8000
     depends_on:
@@ -150,6 +173,7 @@ services:
     environment:
       - MINIO_ROOT_USER=minioadmin
       - MINIO_ROOT_PASSWORD=minioadmin
+      - MINIO_API_CORS_ALLOW_ORIGIN=*
     command: server /data --console-address ":9001"
     ports:
       - "9000:9000"

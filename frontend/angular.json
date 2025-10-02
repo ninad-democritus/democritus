@@ -1,38 +1,311 @@
 {
-  "$schema": "https://json.schemastore.org/angular-cli",
-  "version": 1,
-  "projects": {
-    "ingestion-ui": {
-      "projectType": "application",
-      "root": "",
-      "sourceRoot": "src",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:browser",
-          "options": {
-            "outputPath": "dist/ingestion-ui",
-            "index": "src/index.html",
-            "main": "src/main.ts",
-            "polyfills": ["src/polyfills.ts"],
-            "tsConfig": "tsconfig.app.json",
-            "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["src/styles.scss"],
-            "scripts": []
-          },
-          "configurations": {
-            "production": {
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true
-            }
-          }
-        }
-      }
-    }
-  },
-  "defaultProject": "ingestion-ui"
+	"$schema": "https://json.schemastore.org/angular-cli",
+	"version": 1,
+	"newProjectRoot": "projects",
+	"projects": {
+		"host-shell": {
+			"projectType": "application",
+			"schematics": {
+				"@schematics/angular:component": {
+					"style": "scss",
+					"skipTests": true,
+					"standalone": false
+				},
+				"@schematics/angular:class": {
+					"skipTests": true
+				},
+				"@schematics/angular:directive": {
+					"skipTests": true,
+					"standalone": false
+				},
+				"@schematics/angular:guard": {
+					"skipTests": true
+				},
+				"@schematics/angular:interceptor": {
+					"skipTests": true
+				},
+				"@schematics/angular:pipe": {
+					"skipTests": true,
+					"standalone": false
+				},
+				"@schematics/angular:resolver": {
+					"skipTests": true
+				},
+				"@schematics/angular:service": {
+					"skipTests": true
+				}
+			},
+			"root": "projects/host-shell",
+			"sourceRoot": "projects/host-shell/src",
+			"prefix": "app",
+			"architect": {
+				"build": {
+					"builder": "ngx-build-plus:browser",
+					"options": {
+						"outputPath": "dist/host-shell",
+						"index": "projects/host-shell/src/index.html",
+						"main": "projects/host-shell/src/main.ts",
+						"polyfills": [
+							"zone.js"
+						],
+						"tsConfig": "projects/host-shell/tsconfig.app.json",
+						"inlineStyleLanguage": "scss",
+						"assets": [
+							"projects/host-shell/src/favicon.ico",
+							"projects/host-shell/src/assets"
+						],
+						"styles": [
+							"projects/host-shell/src/styles.scss"
+						],
+						"scripts": [],
+						"extraWebpackConfig": "projects/host-shell/webpack.config.js",
+						"commonChunk": false
+					},
+					"configurations": {
+						"production": {
+							"budgets": [
+								{
+									"type": "initial",
+									"maximumWarning": "500kb",
+									"maximumError": "1mb"
+								},
+								{
+									"type": "anyComponentStyle",
+									"maximumWarning": "2kb",
+									"maximumError": "4kb"
+								}
+							],
+							"outputHashing": "all",
+							"extraWebpackConfig": "projects/host-shell/webpack.prod.config.js"
+						},
+						"development": {
+							"optimization": false,
+							"extractLicenses": false,
+							"sourceMap": true
+						}
+					},
+					"defaultConfiguration": "production"
+				},
+				"serve": {
+					"builder": "ngx-build-plus:dev-server",
+					"options": {
+						"port": 4200,
+						"publicHost": "http://localhost:4200",
+						"extraWebpackConfig": "projects/host-shell/webpack.config.js"
+					},
+					"configurations": {
+						"production": {
+							"buildTarget": "host-shell:build:production",
+							"extraWebpackConfig": "projects/host-shell/webpack.prod.config.js"
+						},
+						"development": {
+							"buildTarget": "host-shell:build:development"
+						}
+					},
+					"defaultConfiguration": "development"
+				}
+			}
+		},
+		"ingestion-app": {
+			"projectType": "application",
+			"root": "projects/ingestion-app",
+			"sourceRoot": "projects/ingestion-app/src",
+			"prefix": "app",
+			"architect": {
+				"build": {
+					"builder": "ngx-build-plus:browser",
+					"options": {
+						"outputPath": "dist/ingestion-app",
+						"index": "projects/ingestion-app/src/index.html",
+						"main": "projects/ingestion-app/src/main.ts",
+						"polyfills": [
+							"projects/ingestion-app/src/polyfills.ts"
+						],
+						"tsConfig": "projects/ingestion-app/tsconfig.app.json",
+						"assets": [
+							"projects/ingestion-app/src/favicon.ico",
+							"projects/ingestion-app/src/assets"
+						],
+						"styles": [
+							"projects/ingestion-app/src/styles.scss"
+						],
+						"scripts": [],
+						"extraWebpackConfig": "projects/ingestion-app/webpack.config.js",
+						"commonChunk": false
+					},
+					"configurations": {
+						"production": {
+							"optimization": true,
+							"outputHashing": "all",
+							"sourceMap": false,
+							"extractLicenses": true,
+							"vendorChunk": false,
+							"buildOptimizer": true,
+							"extraWebpackConfig": "projects/ingestion-app/webpack.prod.config.js"
+						},
+						"development": {
+							"optimization": false,
+							"extractLicenses": false,
+							"sourceMap": true
+						}
+					},
+					"defaultConfiguration": "production"
+				},
+				"serve": {
+					"builder": "ngx-build-plus:dev-server",
+					"options": {
+						"port": 4201,
+						"publicHost": "http://localhost:4201",
+						"extraWebpackConfig": "projects/ingestion-app/webpack.config.js"
+					},
+					"configurations": {
+						"production": {
+							"buildTarget": "ingestion-app:build:production",
+							"extraWebpackConfig": "projects/ingestion-app/webpack.prod.config.js"
+						},
+						"development": {
+							"buildTarget": "ingestion-app:build:development"
+						}
+					},
+					"defaultConfiguration": "development"
+				}
+			}
+		},
+		"ai-canvas": {
+			"projectType": "application",
+			"schematics": {
+				"@schematics/angular:component": {
+					"style": "scss",
+					"skipTests": true,
+					"standalone": false
+				},
+				"@schematics/angular:class": {
+					"skipTests": true
+				},
+				"@schematics/angular:directive": {
+					"skipTests": true,
+					"standalone": false
+				},
+				"@schematics/angular:guard": {
+					"skipTests": true
+				},
+				"@schematics/angular:interceptor": {
+					"skipTests": true
+				},
+				"@schematics/angular:pipe": {
+					"skipTests": true,
+					"standalone": false
+				},
+				"@schematics/angular:resolver": {
+					"skipTests": true
+				},
+				"@schematics/angular:service": {
+					"skipTests": true
+				}
+			},
+			"root": "projects/ai-canvas",
+			"sourceRoot": "projects/ai-canvas/src",
+			"prefix": "app",
+			"architect": {
+				"build": {
+					"builder": "ngx-build-plus:browser",
+					"options": {
+						"outputPath": "dist/ai-canvas",
+						"index": "projects/ai-canvas/src/index.html",
+						"main": "projects/ai-canvas/src/main.ts",
+						"polyfills": [
+							"zone.js"
+						],
+						"tsConfig": "projects/ai-canvas/tsconfig.app.json",
+						"inlineStyleLanguage": "scss",
+						"assets": [
+							"projects/ai-canvas/src/favicon.ico",
+							"projects/ai-canvas/src/assets"
+						],
+						"styles": [
+							"projects/ai-canvas/src/styles.scss"
+						],
+						"scripts": [],
+						"extraWebpackConfig": "projects/ai-canvas/webpack.config.js",
+						"commonChunk": false
+					},
+					"configurations": {
+						"production": {
+							"budgets": [
+								{
+									"type": "initial",
+									"maximumWarning": "500kb",
+									"maximumError": "1mb"
+								},
+								{
+									"type": "anyComponentStyle",
+									"maximumWarning": "2kb",
+									"maximumError": "4kb"
+								}
+							],
+							"outputHashing": "all",
+							"extraWebpackConfig": "projects/ai-canvas/webpack.prod.config.js"
+						},
+						"development": {
+							"optimization": false,
+							"extractLicenses": false,
+							"sourceMap": true
+						}
+					},
+					"defaultConfiguration": "production"
+				},
+				"serve": {
+					"builder": "ngx-build-plus:dev-server",
+					"options": {
+						"port": 4202,
+						"publicHost": "http://localhost:4202",
+						"extraWebpackConfig": "projects/ai-canvas/webpack.config.js"
+					},
+					"configurations": {
+						"production": {
+							"buildTarget": "ai-canvas:build:production",
+							"extraWebpackConfig": "projects/ai-canvas/webpack.prod.config.js"
+						},
+						"development": {
+							"buildTarget": "ai-canvas:build:development"
+						}
+					},
+					"defaultConfiguration": "development"
+				}
+			}
+		},
+		"ui-kit": {
+			"projectType": "library",
+			"root": "libs/ui-kit",
+			"sourceRoot": "libs/ui-kit/src",
+			"prefix": "ui",
+			"architect": {
+				"build": {
+					"builder": "@angular-devkit/build-angular:ng-packagr",
+					"options": {
+						"project": "libs/ui-kit/ng-package.json"
+					},
+					"configurations": {
+						"production": {
+							"tsConfig": "libs/ui-kit/tsconfig.lib.prod.json"
+						},
+						"development": {
+							"tsConfig": "libs/ui-kit/tsconfig.lib.json"
+						}
+					},
+					"defaultConfiguration": "production"
+				},
+				"test": {
+					"builder": "@angular-devkit/build-angular:karma",
+					"options": {
+						"tsConfig": "libs/ui-kit/tsconfig.spec.json",
+						"polyfills": [
+							"zone.js",
+							"zone.js/testing"
+						]
+					}
+				}
+			}
+		}
+	}
 }
-

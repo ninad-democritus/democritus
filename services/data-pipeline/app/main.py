@@ -1,5 +1,4 @@
 from fastapi import FastAPI, HTTPException, BackgroundTasks, WebSocket, WebSocketDisconnect
-from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import logging
 import uuid
@@ -63,14 +62,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Data Pipeline Service", lifespan=lifespan)
 
-# Add CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# CORS is handled by nginx proxy - no middleware needed here
 
 # Health check endpoint
 @app.get("/health")

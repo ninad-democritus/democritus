@@ -1,0 +1,22 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "outDir": "../out-tsc/app",
+    "baseUrl": "..",
+    "sourceMap": true,
+    "declaration": false,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "module": "es2022",
+    "resolveJsonModule": true,
+    "target": "es2022",
+    "useDefineForClassFields": false,
+    "lib": [
+      "es2022",
+      "dom"
+    ]
+  }
+}
+
+

@@ -1,0 +1,29 @@
+# Dependencies
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Build output - IMPORTANT: don't copy old builds into Docker
+dist
+.angular
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage
+.nyc_output
+
+# Misc
+.git
+.gitignore
+*.log
+
