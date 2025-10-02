@@ -92,18 +92,19 @@ def generate_upload_url(payload: GenerateUploadUrlRequest):
 
     file_id = str(uuid.uuid4())
     object_name = f"incoming/{file_id}/{payload.fileName}"
+    
     try:
-        # Generate presigned URL using internal endpoint, then replace host for browser
+        # Generate presigned URL using internal client (for API calls to work)
         url = client.presigned_put_object(
             bucket_name=bucket,
             object_name=object_name,
             expires=timedelta(hours=1),
         )
         
-        # Replace internal host with public host for browser access
-        # Route through nginx proxy to avoid CORS and signature issues
+        # Replace internal host with public endpoint for browser access
+        public_endpoint = os.environ.get("MINIO_PUBLIC_ENDPOINT", "http://localhost")
         if "minio:9000" in url:
-            url = url.replace("http://minio:9000", "http://localhost")
+            url = url.replace("http://minio:9000", public_endpoint)
     except Exception as exc:
         logger.exception("Presign generation failed")
         raise HTTPException(status_code=500, detail=f"Failed to create presigned URL: {exc}")
@@ -129,22 +130,24 @@ def generate_batch_upload_urls(payload: BatchUploadRequest):
     job_id = str(uuid.uuid4())
     uploads = []
     
+    # Get public endpoint for URL replacement
+    public_endpoint = os.environ.get("MINIO_PUBLIC_ENDPOINT", "http://localhost")
+    
     for file_info in payload.files:
         file_id = str(uuid.uuid4())
         object_name = f"jobs/{job_id}/{file_id}/{file_info.fileName}"
         
         try:
-            # Generate presigned URL using internal endpoint, then replace host for browser access
+            # Generate presigned URL using internal client (for API calls to work)
             url = client.presigned_put_object(
                 bucket_name=bucket,
                 object_name=object_name,
                 expires=timedelta(hours=1),
             )
             
-            # Replace internal host with public host for browser access
-            # Route through nginx proxy to avoid CORS and signature issues
+            # Replace internal host with public endpoint for browser access
             if "minio:9000" in url:
-                url = url.replace("http://minio:9000", "http://localhost")
+                url = url.replace("http://minio:9000", public_endpoint)
                 
             uploads.append(FileUploadUrl(
                 fileName=file_info.fileName,

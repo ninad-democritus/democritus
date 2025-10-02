@@ -1,0 +1,104 @@
+// App Component - Ocean Breeze Theme
+// SCSS styles for the main app component
+
+.app-container {
+  background: var(--bg-page);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  background-color: var(--bg-header);
+  border-bottom: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  display: flex;
+  justify-content: space-between; // This ensures left/right alignment
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  height: 60px; // Fixed header height for better UX
+}
+
+.app-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  margin: 0;
+}
+
+.app-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+// Navigation styles
+.app-nav {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: center;
+  // Ensure nav stays on the right
+  margin-left: auto;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: var(--text-secondary);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+  transition: var(--transition-colors);
+  border: 1px solid transparent;
+  white-space: nowrap; // Prevent text wrapping
+  
+  &:hover {
+    color: var(--text-primary);
+    background: var(--color-primary-50);
+    border-color: var(--color-primary-200);
+  }
+  
+  &.active {
+    color: var(--color-primary-600);
+    background: var(--color-primary-100);
+    border-color: var(--color-primary-300);
+    font-weight: var(--font-weight-semibold);
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .app-header {
+    padding: var(--spacing-sm) var(--spacing-md);
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    min-height: 60px; // Maintain minimum height even on mobile
+  }
+  
+  .app-title {
+    font-size: var(--font-size-lg);
+  }
+  
+  .app-nav {
+    margin-left: 0; // Reset margin on mobile
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .nav-link {
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+}
+
+// Print styles
+@media print {
+  .app-header {
+    background: white !important;
+    box-shadow: none !important;
+    border-bottom: 1px solid var(--border-medium) !important;
+  }
+}

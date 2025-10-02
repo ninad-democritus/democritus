@@ -1,0 +1,82 @@
+<!-- Main Container -->
+<div class="ingestion-status-container">
+  <!-- Header -->
+  <div class="status-header">
+    <div class="header-content">
+      <!-- Left side - Title only -->
+      <div class="header-left">
+        <div class="header-title">
+          <h1 class="page-title">Pipeline Status</h1>
+        </div>
+      </div>
+      
+      <!-- Right side - Status and connection -->
+      <div class="header-right">
+        <!-- Status Summary (horizontal layout) -->
+        <div class="header-status">
+          <span class="status-label">STATUS:</span>
+          <span class="status-value" [class]="'status-' + pipelineStatus.status">
+            {{ pipelineStatus.status | titlecase }}
+          </span>
+          <span class="status-label">DURATION:</span>
+          <span class="status-value">{{ pipelineStatus.duration }}</span>
+        </div>
+        
+        <!-- Connection Status -->
+        <app-connection-status
+          [isConnected]="connectionStatus"
+          [isConnecting]="isConnecting"
+          (retryConnection)="onRetryConnection()">
+        </app-connection-status>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="status-content">
+    <div class="content-wrapper">
+      <!-- Left Column - Pipeline Progress -->
+      <div class="main-column">
+        <app-pipeline-progress
+          [stages]="pipelineStages"
+          [stageStatuses]="stageStatuses"
+          [stageErrorMessages]="stageErrorMessages">
+        </app-pipeline-progress>
+      </div>
+      
+      <!-- Right Column - Status and Summary -->
+      <div class="side-column">
+        <!-- Status Summary -->
+        <app-status-summary
+          [status]="pipelineStatus">
+        </app-status-summary>
+        
+        <!-- Upload Summary -->
+        <app-upload-summary
+          [stats]="uploadStats">
+        </app-upload-summary>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Footer Actions -->
+  <!-- <div *ngIf="pipelineStatus.status === 'completed'" class="status-footer">
+    <div class="footer-content">
+      <div class="completion-message">
+        <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <span>Pipeline completed successfully!</span>
+      </div>
+      
+      <button 
+        (click)="proceedToNext()"
+        class="proceed-button">
+        <span>Continue</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+        </svg>
+      </button>
+    </div>
+  </div> -->
+</div>
