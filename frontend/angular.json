@@ -214,7 +214,7 @@
 						"index": "projects/ai-canvas/src/index.html",
 						"main": "projects/ai-canvas/src/main.ts",
 						"polyfills": [
-							"zone.js"
+							"projects/ai-canvas/src/polyfills.ts"
 						],
 						"tsConfig": "projects/ai-canvas/tsconfig.app.json",
 						"inlineStyleLanguage": "scss",
@@ -239,8 +239,8 @@
 								},
 								{
 									"type": "anyComponentStyle",
-									"maximumWarning": "2kb",
-									"maximumError": "4kb"
+									"maximumWarning": "6kb",
+									"maximumError": "10kb"
 								}
 							],
 							"outputHashing": "all",

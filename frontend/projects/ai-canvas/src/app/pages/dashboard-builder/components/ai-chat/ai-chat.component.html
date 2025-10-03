@@ -1,0 +1,105 @@
+<div class="ai-chat">
+  <!-- Chat header -->
+  <div class="chat-header">
+    <div class="header-title">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" />
+      </svg>
+      <h2>AI Assistant</h2>
+    </div>
+    <p class="header-subtitle">Ask me anything about your data</p>
+  </div>
+
+  <!-- Selected chart context -->
+  <div class="chart-context" *ngIf="selectedChart">
+    <div class="context-content">
+      <div class="context-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 3v18h18M7 12h2v7H7v-7zm4-5h2v12h-2V7zm4 7h2v5h-2v-5z" />
+        </svg>
+      </div>
+      <div class="context-info">
+        <div class="context-type">{{ selectedChart.chartType.name }} ({{ selectedChart.cols }}x{{ selectedChart.rows }})</div>
+        <div class="context-title">{{ selectedChart.config.title }}</div>
+      </div>
+      <button class="context-close" (click)="clearSelection()" title="Clear selection">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 6L6 18M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    <div class="context-hint">
+      Questions will update this chart
+    </div>
+  </div>
+
+  <!-- Messages list -->
+  <div class="messages-container" #messageContainer>
+    <div class="messages-list">
+      <div
+        *ngFor="let message of messages; trackBy: trackByMessageId"
+        class="message"
+        [ngClass]="{
+          'message-user': message.sender === 'user',
+          'message-ai': message.sender === 'ai',
+          'message-loading': message.queryInProgress
+        }">
+        
+        <div class="message-avatar" *ngIf="message.sender === 'ai'">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" />
+          </svg>
+        </div>
+
+        <div class="message-content">
+          <div class="message-bubble">
+            <div class="message-text">{{ message.content }}</div>
+            <div class="message-time">{{ formatTime(message.timestamp) }}</div>
+          </div>
+
+          <!-- Loading animation -->
+          <div class="typing-indicator" *ngIf="message.queryInProgress">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+
+        <div class="message-avatar" *ngIf="message.sender === 'user'">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Input area -->
+  <div class="chat-input">
+    <div class="input-wrapper">
+      <textarea
+        [formControl]="messageControl"
+        (keypress)="onKeyPress($event)"
+        placeholder="Ask me to create a chart or populate an existing one..."
+        rows="1"
+        class="message-textarea"
+        [disabled]="isSending">
+      </textarea>
+      
+      <button
+        class="send-button"
+        (click)="sendMessage()"
+        [disabled]="messageControl.invalid || isSending"
+        title="Send message">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="input-hint" *ngIf="!selectedChart">
+      💡 Tip: Drag a chart type to the grid first, then click it to populate with data
+    </div>
+  </div>
+</div>
+
