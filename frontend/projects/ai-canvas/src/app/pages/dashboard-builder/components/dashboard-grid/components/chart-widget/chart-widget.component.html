@@ -1,0 +1,48 @@
+<div class="chart-widget" (click)="onChartClick()" [class.has-data]="hasData()">
+  <!-- Chart header -->
+  <div class="chart-header">
+    <div class="chart-title-section">
+      <h3 class="chart-title">{{ dashboardItem.config.title }}</h3>
+      <span class="chart-subtitle" *ngIf="hasData()">
+        {{ getLastUpdated() }}
+      </span>
+    </div>
+    
+    <div class="chart-actions">
+      <button class="action-btn" (click)="onRemove($event)" title="Remove chart">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 6L6 18M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Chart content -->
+  <div class="chart-content">
+    <div
+      echarts
+      [options]="dashboardItem.config.echartsOptions"
+      (chartInit)="onChartInit($event)"
+      class="chart-container">
+    </div>
+  </div>
+
+  <!-- Selection indicator -->
+  <div class="selection-indicator" *ngIf="dashboardItem.isSelected">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M13 10V3L4 14h7v7l9-11h-7z" />
+    </svg>
+    <span>Linked to AI Chat</span>
+  </div>
+
+  <!-- Empty state overlay -->
+  <div class="empty-overlay" *ngIf="!hasData()">
+    <div class="empty-content">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" />
+      </svg>
+      <p>Click to populate with AI</p>
+    </div>
+  </div>
+</div>
+

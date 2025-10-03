@@ -1,0 +1,83 @@
+<div class="chart-library">
+  <div class="library-header">
+    <h2 class="library-title">Chart Library</h2>
+    <p class="library-subtitle">Drag charts to the grid</p>
+  </div>
+
+  <div class="library-content">
+    <!-- Basic Charts -->
+    <div class="chart-category">
+      <h3 class="category-title">Basic Charts</h3>
+      <div class="chart-list">
+        <div
+          *ngFor="let chartType of getChartsByCategory('basic')"
+          class="chart-card"
+          cdkDrag
+          [cdkDragData]="chartType"
+          (cdkDragStarted)="onDragStarted($event, chartType)"
+          (cdkDragEnded)="onDragEnded()"
+        >
+          <div class="chart-card-content">
+            <div class="chart-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path [attr.d]="getChartIcon(chartType.icon)"></path>
+              </svg>
+            </div>
+            <div class="chart-info">
+              <div class="chart-name">{{ chartType.name }}</div>
+              <div class="chart-description">{{ chartType.description }}</div>
+            </div>
+          </div>
+          
+          <!-- Drag preview -->
+          <div *cdkDragPreview class="chart-drag-preview">
+            <div class="preview-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path [attr.d]="getChartIcon(chartType.icon)"></path>
+              </svg>
+            </div>
+            <span>{{ chartType.name }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Advanced Charts -->
+    <div class="chart-category">
+      <h3 class="category-title">Advanced Charts</h3>
+      <div class="chart-list">
+        <div
+          *ngFor="let chartType of getChartsByCategory('advanced')"
+          class="chart-card"
+          cdkDrag
+          [cdkDragData]="chartType"
+          (cdkDragStarted)="onDragStarted($event, chartType)"
+          (cdkDragEnded)="onDragEnded()"
+        >
+          <div class="chart-card-content">
+            <div class="chart-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path [attr.d]="getChartIcon(chartType.icon)"></path>
+              </svg>
+            </div>
+            <div class="chart-info">
+              <div class="chart-name">{{ chartType.name }}</div>
+              <div class="chart-description">{{ chartType.description }}</div>
+            </div>
+          </div>
+
+          <!-- Drag preview -->
+          <div *cdkDragPreview class="chart-drag-preview">
+            <div class="preview-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path [attr.d]="getChartIcon(chartType.icon)"></path>
+              </svg>
+            </div>
+            <span>{{ chartType.name }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

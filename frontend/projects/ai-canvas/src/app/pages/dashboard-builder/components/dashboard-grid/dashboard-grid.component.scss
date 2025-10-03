@@ -1,0 +1,93 @@
+.dashboard-grid {
+  height: 100%;
+  background: var(--bg-page-solid);
+  overflow: auto;
+  position: relative;
+  padding: var(--spacing-xl);
+
+  // Custom scrollbar
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--color-neutral-100);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--color-neutral-300);
+    border-radius: 4px;
+
+    &:hover {
+      background: var(--color-neutral-400);
+    }
+  }
+}
+
+// Empty state
+.empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+}
+
+.empty-state-content {
+  text-align: center;
+  max-width: 400px;
+  padding: var(--spacing-3xl);
+}
+
+.empty-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto var(--spacing-xl);
+  color: var(--color-primary-200);
+}
+
+.empty-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-md) 0;
+}
+
+.empty-description {
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+  line-height: var(--line-height-relaxed);
+  margin: 0;
+}
+
+// Gridster styles
+gridster {
+  background: transparent;
+}
+
+// Selected chart highlight
+.selected-chart {
+  :ng-deep gridster-item-inner {
+    border: 2px solid var(--color-primary-500) !important;
+    box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.1) !important;
+  }
+}
+
+// CDK drop list styling
+.cdk-drop-list-dragging {
+  .cdk-drag {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+// Drag placeholder
+.cdk-drag-placeholder {
+  opacity: 0.4;
+}
+
+// Drag preview from library
+::ng-deep .cdk-drag-preview {
+  box-shadow: var(--shadow-xl);
+  opacity: 0.9;
+}
+

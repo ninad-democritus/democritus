@@ -17,7 +17,7 @@ RUN npm run ng -- build ui-kit
 RUN npm run ng -- build shared-ui
 
 # Build the ai-canvas application
-RUN npm run ng -- build ai-canvas --configuration=production
+RUN npm run ng -- build ai-canvas
 
 # Stage 2: Serve with NGINX
 FROM nginx:alpine
