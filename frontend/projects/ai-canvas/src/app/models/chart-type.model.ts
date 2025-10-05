@@ -22,7 +22,7 @@ export const CHART_TYPES: ChartType[] = [
     icon: 'chart-bar',
     category: 'basic',
     description: 'Compare values across categories',
-    defaultSize: { cols: 4, rows: 3 }
+    defaultSize: { cols: 8, rows: 6 }
   },
   {
     id: 'line',
@@ -30,7 +30,7 @@ export const CHART_TYPES: ChartType[] = [
     icon: 'chart-line',
     category: 'basic',
     description: 'Show trends over time',
-    defaultSize: { cols: 6, rows: 3 }
+    defaultSize: { cols: 12, rows: 6 }
   },
   {
     id: 'pie',
@@ -38,7 +38,7 @@ export const CHART_TYPES: ChartType[] = [
     icon: 'chart-pie',
     category: 'basic',
     description: 'Display proportions and percentages',
-    defaultSize: { cols: 4, rows: 3 }
+    defaultSize: { cols: 8, rows: 6 }
   },
   {
     id: 'area',
@@ -46,7 +46,7 @@ export const CHART_TYPES: ChartType[] = [
     icon: 'chart-area',
     category: 'basic',
     description: 'Show trends with filled areas',
-    defaultSize: { cols: 6, rows: 3 }
+    defaultSize: { cols: 12, rows: 6 }
   },
   {
     id: 'scatter',
@@ -54,7 +54,7 @@ export const CHART_TYPES: ChartType[] = [
     icon: 'chart-scatter',
     category: 'advanced',
     description: 'Show correlation between variables',
-    defaultSize: { cols: 6, rows: 4 }
+    defaultSize: { cols: 12, rows: 8 }
   },
   {
     id: 'table',
@@ -62,7 +62,7 @@ export const CHART_TYPES: ChartType[] = [
     icon: 'table',
     category: 'basic',
     description: 'Display raw data in tabular format',
-    defaultSize: { cols: 6, rows: 4 }
+    defaultSize: { cols: 12, rows: 8 }
   },
   {
     id: 'kpi',
@@ -70,7 +70,7 @@ export const CHART_TYPES: ChartType[] = [
     icon: 'chart-kpi',
     category: 'basic',
     description: 'Display single key metric',
-    defaultSize: { cols: 3, rows: 2 }
+    defaultSize: { cols: 6, rows: 4 }
   },
   {
     id: 'heatmap',
@@ -78,7 +78,7 @@ export const CHART_TYPES: ChartType[] = [
     icon: 'chart-heatmap',
     category: 'advanced',
     description: 'Visualize data density and patterns',
-    defaultSize: { cols: 8, rows: 4 }
+    defaultSize: { cols: 16, rows: 8 }
   }
 ];
 

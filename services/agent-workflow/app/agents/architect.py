@@ -371,7 +371,7 @@ class ArchitectAgent:
         
         # Higher confidence if it looks like an identifier
         col_name_lower = col1['name'].lower()
-        if any(pattern in col_name_lower for pattern in ['id', 'key', 'code', 'num', 'noc']):
+        if any(pattern in col_name_lower for pattern in ['id', 'key', 'code', 'num', 'ref']):
             confidence += 0.2
         
         # Higher confidence if one column has higher uniqueness (likely a lookup key)

@@ -10,6 +10,7 @@ services:
       - file-upload
       - agent-workflow
       - data-pipeline
+      - query-service
     restart: unless-stopped
 
   # MFE Host Application (Shell)
@@ -130,7 +131,7 @@ services:
       - OPENMETADATA_AUTH_PROVIDER=jwt
       - OPENMETADATA_ADMIN_EMAIL=admin@open-metadata.org
       # JWT Token for ingestion-bot
-      - OPENMETADATA_JWT_TOKEN=eyJraWQiOiJHYjM4OWEtOWY3Ni1nZGpzLWE5MmotMDI0MmJrOTQzNTYiLCJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJvcGVuLW1ldGFkYXRhLm9yZyIsInN1YiI6ImluZ2VzdGlvbi1ib3QiLCJyb2xlcyI6WyJJbmdlc3Rpb25Cb3RSb2xlIl0sImVtYWlsIjoiaW5nZXN0aW9uLWJvdEBvcGVuLW1ldGFkYXRhLm9yZyIsImlzQm90Ijp0cnVlLCJ0b2tlblR5cGUiOiJCT1QiLCJpYXQiOjE3NTkxNjAyMjMsImV4cCI6bnVsbH0.nG6dirZodpn-IgdHXX_mvHmDGVCQ6aeOS-hs4mONQx2hYXsgiWsuKa5B8v2RfVxALDBQWziByJ499W98YVoqLaJZ4pqsqY-VCsRx2au3nrnsRSGwqxvw6JfzB1t5TTWVL1K0CFYioh68r0VxaCqURA7UNEyu9O1VK_CiIKBGIt4k5wqiBBNLJlp0mePYvSsdeUiL7-Fa8uo2OjZAmzb5DtAIbSyKdBUDrhErH5EIH8pr4-ltvj_s_Hi5h_YtOTJykRwDMM4k25jMoEPhTqYyHF4GsjWPiHCEloTv0UO47xSX30o3-OQyI2i67odsftFypvxjOzQJE73Qj-rC3cjR4g
+      - OPENMETADATA_JWT_TOKEN=eyJraWQiOiJHYjM4OWEtOWY3Ni1nZGpzLWE5MmotMDI0MmJrOTQzNTYiLCJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwOi8vb3Blbm1ldGFkYXRhLXNlcnZlcjo4NTg1Iiwic3ViIjoiaW5nZXN0aW9uLWJvdCIsInJvbGVzIjpbIkluZ2VzdGlvbkJvdFJvbGUiXSwiZW1haWwiOiJpbmdlc3Rpb24tYm90QG9wZW4tbWV0YWRhdGEub3JnIiwiaXNCb3QiOnRydWUsInRva2VuVHlwZSI6IkJPVCIsImlhdCI6MTc1OTU5ODA5OSwiZXhwIjpudWxsfQ.EqgdF4opwCRvhoTViOlh_hu4IKtBDbwtUEUHae3Fpdx91EJ_EKfxE-92tRkuSaMWEMPrpgLw-sa96E6FRIJtGkEGE0e6bqDluBuuKMqKGtnnSp_9-uimSUREsTsMPtCUYgVahMCU5G6oLBMoGgmj3SkCPQd9orYtIHXPQsktmVwb91Ia_WqO4MJD-fco2h8qI5EnipjX9luMuKr9JYb7WcmL68RyFRgSKApiZtXS6gOHVFupMN6gZOBwnPoj3rIhPak--gQV72drMxMb1c3CqzwOm1tTxsy4F4FaFcX8ds9HDLCw9CsaV_ADmN23aIRy71LqfDoP3BFT_Qh2Bxedhg
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
@@ -142,6 +143,88 @@ services:
       - iceberg-rest
       - nessie
       - openmetadata-server
+
+  # Query Service (New - Natural Language to SQL)
+  query-service:
+    build:
+      context: ./services/query-service
+      dockerfile: Dockerfile
+    entrypoint: []
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    environment:
+      - REDIS_URL=redis://redis:6379/1
+      - OPENMETADATA_API_ENDPOINT=http://openmetadata-server:8585/api
+      - OPENMETADATA_JWT_TOKEN=eyJraWQiOiJHYjM4OWEtOWY3Ni1nZGpzLWE5MmotMDI0MmJrOTQzNTYiLCJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwOi8vb3Blbm1ldGFkYXRhLXNlcnZlcjo4NTg1Iiwic3ViIjoiaW5nZXN0aW9uLWJvdCIsInJvbGVzIjpbIkluZ2VzdGlvbkJvdFJvbGUiXSwiZW1haWwiOiJpbmdlc3Rpb24tYm90QG9wZW4tbWV0YWRhdGEub3JnIiwiaXNCb3QiOnRydWUsInRva2VuVHlwZSI6IkJPVCIsImlhdCI6MTc1OTU5ODA5OSwiZXhwIjpudWxsfQ.EqgdF4opwCRvhoTViOlh_hu4IKtBDbwtUEUHae3Fpdx91EJ_EKfxE-92tRkuSaMWEMPrpgLw-sa96E6FRIJtGkEGE0e6bqDluBuuKMqKGtnnSp_9-uimSUREsTsMPtCUYgVahMCU5G6oLBMoGgmj3SkCPQd9orYtIHXPQsktmVwb91Ia_WqO4MJD-fco2h8qI5EnipjX9luMuKr9JYb7WcmL68RyFRgSKApiZtXS6gOHVFupMN6gZOBwnPoj3rIhPak--gQV72drMxMb1c3CqzwOm1tTxsy4F4FaFcX8ds9HDLCw9CsaV_ADmN23aIRy71LqfDoP3BFT_Qh2Bxedhg
+      - TRINO_HOST=trino
+      - TRINO_PORT=8080
+      - TRINO_CATALOG=iceberg
+      - TRINO_SCHEMA=default
+      - OLLAMA_HOST=http://ollama:11434
+      - OLLAMA_NL_MODEL=llama3.2:3b
+      - OLLAMA_CHART_MODEL=llama3.2:3b
+      - SERVICE_HOST=query-service
+      - SERVICE_PORT=8000
+      - LANGCHAIN_TRACING_V2=false
+      - LOG_LEVEL=INFO
+    depends_on:
+      - redis
+      - ollama
+      - trino
+      - openmetadata-server
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Query Service Worker (Celery)
+  query-service-worker:
+    build:
+      context: ./services/query-service
+      dockerfile: Dockerfile
+    command: ["celery", "-A", "app.tasks:celery_app", "worker", "-l", "info"]
+    environment:
+      - REDIS_URL=redis://redis:6379/1
+      - OPENMETADATA_API_ENDPOINT=http://openmetadata-server:8585/api
+      - OPENMETADATA_JWT_TOKEN=eyJraWQiOiJHYjM4OWEtOWY3Ni1nZGpzLWE5MmotMDI0MmJrOTQzNTYiLCJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwOi8vb3Blbm1ldGFkYXRhLXNlcnZlcjo4NTg1Iiwic3ViIjoiaW5nZXN0aW9uLWJvdCIsInJvbGVzIjpbIkluZ2VzdGlvbkJvdFJvbGUiXSwiZW1haWwiOiJpbmdlc3Rpb24tYm90QG9wZW4tbWV0YWRhdGEub3JnIiwiaXNCb3QiOnRydWUsInRva2VuVHlwZSI6IkJPVCIsImlhdCI6MTc1OTU5ODA5OSwiZXhwIjpudWxsfQ.EqgdF4opwCRvhoTViOlh_hu4IKtBDbwtUEUHae3Fpdx91EJ_EKfxE-92tRkuSaMWEMPrpgLw-sa96E6FRIJtGkEGE0e6bqDluBuuKMqKGtnnSp_9-uimSUREsTsMPtCUYgVahMCU5G6oLBMoGgmj3SkCPQd9orYtIHXPQsktmVwb91Ia_WqO4MJD-fco2h8qI5EnipjX9luMuKr9JYb7WcmL68RyFRgSKApiZtXS6gOHVFupMN6gZOBwnPoj3rIhPak--gQV72drMxMb1c3CqzwOm1tTxsy4F4FaFcX8ds9HDLCw9CsaV_ADmN23aIRy71LqfDoP3BFT_Qh2Bxedhg
+      - TRINO_HOST=trino
+      - TRINO_PORT=8080
+      - TRINO_CATALOG=iceberg
+      - TRINO_SCHEMA=default
+      - OLLAMA_HOST=http://ollama:11434
+      - OLLAMA_NL_MODEL=llama3.2:3b
+      - OLLAMA_CHART_MODEL=llama3.2:3b
+      - LANGCHAIN_TRACING_V2=false
+      - LOG_LEVEL=INFO
+    depends_on:
+      - redis
+      - ollama
+      - trino
+      - openmetadata-server
+    restart: unless-stopped
+
+  # Trino Query Engine
+  trino:
+    image: trinodb/trino:458
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./infra/trino/catalog/iceberg.properties:/etc/trino/catalog/iceberg.properties:ro
+      - ./infra/trino/config.properties:/etc/trino/config.properties:ro
+    environment:
+      - AWS_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=minioadmin
+      - AWS_SECRET_ACCESS_KEY=minioadmin
+    depends_on:
+      - iceberg-rest
+      - minio
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/v1/info"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   redis:
     image: redis:7-alpine
@@ -243,10 +326,26 @@ services:
     ports:
       - "11434:11434"
     healthcheck:
-      test: ["CMD", "bash", "-lc", "curl -sf http://localhost:11434/api/tags || exit 1"]
+      test: ["CMD", "ollama", "list"]
       interval: 10s
       timeout: 5s
       retries: 10
+      start_period: 30s
+
+  # Ollama Model Loader (Init Container)
+  ollama-init:
+    image: ollama/ollama:latest
+    depends_on:
+      ollama:
+        condition: service_healthy
+    entrypoint: /bin/sh -c
+    command: >
+      "sleep 10 &&
+       ollama pull llama3.2:3b &&
+       echo 'Models downloaded successfully'"
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+    restart: "no"
 
   # OpenMetadata Migration Container (must run first)
   execute-migrate-all:

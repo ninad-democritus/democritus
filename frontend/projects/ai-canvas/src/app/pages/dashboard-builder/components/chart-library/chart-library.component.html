@@ -4,7 +4,15 @@
     <p class="library-subtitle">Drag charts to the grid</p>
   </div>
 
-  <div class="library-content">
+  <div class="library-content"
+       cdkDropList
+       id="chartLibraryList"
+       #chartLibraryList="cdkDropList"
+       [cdkDropListData]="chartTypes"
+       [cdkDropListConnectedTo]="['gridDropList']"
+       [cdkDropListSortingDisabled]="true"
+       [cdkDropListEnterPredicate]="returnFalse"
+       (cdkDropListDropped)="onLibraryDrop($event)">
     <!-- Basic Charts -->
     <div class="chart-category">
       <h3 class="category-title">Basic Charts</h3>

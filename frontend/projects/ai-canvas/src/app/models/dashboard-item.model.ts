@@ -14,6 +14,7 @@ export interface DashboardItem {
   rows: number;
   config: ChartConfig;
   isSelected?: boolean; // For AI chat context
+  isHighlighted?: boolean; // For highlighting newly created/updated charts
 }
 
 /**

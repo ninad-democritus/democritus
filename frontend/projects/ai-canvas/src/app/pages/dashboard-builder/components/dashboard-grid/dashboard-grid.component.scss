@@ -1,68 +1,43 @@
 .dashboard-grid {
   height: 100%;
+  width: 100%;
   background: var(--bg-page-solid);
-  overflow: auto;
-  position: relative;
-  padding: var(--spacing-xl);
-
-  // Custom scrollbar
-  &::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: var(--color-neutral-100);
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: var(--color-neutral-300);
-    border-radius: 4px;
-
-    &:hover {
-      background: var(--color-neutral-400);
-    }
-  }
-}
-
-// Empty state
-.empty-state {
+  overflow: hidden;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100%;
+  flex-direction: column;
+  position: relative;
 }
 
-.empty-state-content {
-  text-align: center;
-  max-width: 400px;
-  padding: var(--spacing-3xl);
+// Gridster container
+.gridster-container {
+  flex: 1;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
 }
 
-.empty-icon {
-  width: 64px;
-  height: 64px;
-  margin: 0 auto var(--spacing-xl);
-  color: var(--color-primary-200);
-}
-
-.empty-title {
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-semibold);
-  color: var(--text-primary);
-  margin: 0 0 var(--spacing-md) 0;
-}
-
-.empty-description {
-  font-size: var(--font-size-base);
-  color: var(--text-secondary);
-  line-height: var(--line-height-relaxed);
-  margin: 0;
-}
-
-// Gridster styles
+// Gridster styles with visible grid
 gridster {
-  background: transparent;
+  height: 100% !important;
+  width: 100% !important;
+  overflow: hidden !important;
+  
+  // Grid background pattern - more visible
+  background-image: 
+    linear-gradient(to right, rgba(0, 0, 0, 0.12) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.12) 1px, transparent 1px);
+  background-size: calc(100% / 24) calc(100% / 24);
+  background-color: #fafafa;
+}
+
+// Also apply to inner gridster element for displayGrid.Always
+::ng-deep {
+  gridster-grid {
+    background-image: 
+      linear-gradient(to right, rgba(0, 0, 0, 0.12) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.12) 1px, transparent 1px) !important;
+    background-size: calc(100% / 24) calc(100% / 24) !important;
+  }
 }
 
 // Selected chart highlight
@@ -70,6 +45,31 @@ gridster {
   :ng-deep gridster-item-inner {
     border: 2px solid var(--color-primary-500) !important;
     box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.1) !important;
+  }
+}
+
+// Highlighted chart animation (for newly created charts)
+.highlighted-chart {
+  :ng-deep gridster-item-inner {
+    animation: chartPulse 2s ease-in-out;
+  }
+}
+
+@keyframes chartPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 20px rgba(20, 184, 166, 0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 

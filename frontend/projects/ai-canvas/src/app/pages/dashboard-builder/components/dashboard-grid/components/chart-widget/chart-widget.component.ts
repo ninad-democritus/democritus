@@ -3,7 +3,7 @@
  * Individual chart display within the grid
  */
 
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
 import { DashboardItem } from '../../../../../../models/dashboard-item.model';
 
 @Component({
@@ -19,10 +19,24 @@ export class ChartWidgetComponent implements OnChanges {
   // ECharts instance
   chartInstance: any;
 
+  constructor(private cdr: ChangeDetectorRef) {}
+
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['dashboardItem'] && this.chartInstance) {
-      // Update chart when data changes
-      this.updateChart();
+    if (changes['dashboardItem']) {
+      console.log('[ChartWidget] Dashboard item changed:', {
+        chartId: this.dashboardItem.id,
+        hasQuery: !!this.dashboardItem.config.naturalLanguageQuery,
+        hasTimestamp: !!this.dashboardItem.config.queryTimestamp,
+        change: changes['dashboardItem']
+      });
+      
+      // Trigger change detection to update the empty overlay
+      this.cdr.detectChanges();
+      
+      if (this.chartInstance) {
+        // Update chart when data changes
+        this.updateChart();
+      }
     }
   }
 
@@ -33,6 +47,7 @@ export class ChartWidgetComponent implements OnChanges {
 
   private updateChart(): void {
     if (this.chartInstance && this.dashboardItem.config.echartsOptions) {
+      console.log('[ChartWidget] Updating chart with options:', JSON.stringify(this.dashboardItem.config.echartsOptions, null, 2));
       this.chartInstance.setOption(this.dashboardItem.config.echartsOptions, true);
       this.chartInstance.resize();
     }
@@ -48,7 +63,25 @@ export class ChartWidgetComponent implements OnChanges {
   }
 
   hasData(): boolean {
-    return !!this.dashboardItem.config.naturalLanguageQuery;
+    // Chart has data if it has a natural language query and a query timestamp
+    // This ensures the chart was populated via AI, not just a placeholder
+    const hasQuery = !!this.dashboardItem.config.naturalLanguageQuery;
+    const hasTimestamp = !!this.dashboardItem.config.queryTimestamp;
+    const hasOptions = !!this.dashboardItem.config.echartsOptions;
+    const result = hasQuery && hasTimestamp;
+    
+    console.log('[ChartWidget] hasData check:', {
+      chartId: this.dashboardItem.id,
+      hasQuery,
+      hasTimestamp,
+      hasOptions,
+      result,
+      naturalLanguageQuery: this.dashboardItem.config.naturalLanguageQuery,
+      queryTimestamp: this.dashboardItem.config.queryTimestamp,
+      configKeys: Object.keys(this.dashboardItem.config)
+    });
+    
+    return result;
   }
 
   getLastUpdated(): string {

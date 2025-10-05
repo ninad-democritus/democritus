@@ -49,7 +49,14 @@ class FileReaderService:
             try:
                 # Read based on file type
                 if file_info.file_extension == 'csv':
-                    df = spark.read.option("header", "true").option("inferSchema", "true").csv(temp_file)
+                    # Proper CSV options to handle quotes and escaping
+                    df = spark.read \
+                        .option("header", "true") \
+                        .option("inferSchema", "true") \
+                        .option("quote", '"') \
+                        .option("escape", '"') \
+                        .option("multiLine", "false") \
+                        .csv(temp_file)
                 elif file_info.file_extension in ['xlsx', 'xls']:
                     df = self._read_excel_with_spark(temp_file)
                 elif file_info.file_extension == 'parquet':
@@ -218,7 +225,14 @@ class FileReaderService:
             spark = SparkSessionManager.get_session()
             
             if file_extension == 'csv':
-                return spark.read.option("header", "true").option("inferSchema", "true").csv(s3_path)
+                # Proper CSV options to handle quotes and escaping
+                return spark.read \
+                    .option("header", "true") \
+                    .option("inferSchema", "true") \
+                    .option("quote", '"') \
+                    .option("escape", '"') \
+                    .option("multiLine", "false") \
+                    .csv(s3_path)
             elif file_extension == 'parquet':
                 return spark.read.parquet(s3_path)
             elif file_extension == 'json':
@@ -237,7 +251,14 @@ class FileReaderService:
             spark = SparkSessionManager.get_session()
             
             if file_extension == 'csv':
-                return spark.read.option("header", "true").option("inferSchema", "true").csv(file_path)
+                # Proper CSV options to handle quotes and escaping
+                return spark.read \
+                    .option("header", "true") \
+                    .option("inferSchema", "true") \
+                    .option("quote", '"') \
+                    .option("escape", '"') \
+                    .option("multiLine", "false") \
+                    .csv(file_path)
             elif file_extension in ['xlsx', 'xls']:
                 return self._read_excel_with_spark(file_path)
             elif file_extension == 'parquet':

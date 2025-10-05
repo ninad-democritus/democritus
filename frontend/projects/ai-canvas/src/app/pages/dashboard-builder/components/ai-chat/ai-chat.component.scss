@@ -205,6 +205,14 @@
   font-size: var(--font-size-sm);
   line-height: var(--line-height-relaxed);
   word-wrap: break-word;
+
+  &.status-text {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    white-space: pre-line;
+    color: var(--text-secondary);
+  }
 }
 
 .message-time {
@@ -213,19 +221,21 @@
   opacity: 0.7;
 }
 
-// Typing indicator
-.typing-indicator {
-  display: flex;
-  gap: 4px;
-  padding: var(--spacing-sm);
-  margin-top: 4px;
+// Typing indicator (inline with text)
+.typing-dots {
+  display: inline-flex;
+  gap: 3px;
+  margin-left: 6px;
+  align-items: center;
+  vertical-align: middle;
 
-  span {
-    width: 8px;
-    height: 8px;
+  .dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     background: var(--color-primary-500);
-    animation: typing 1.4s infinite;
+    animation: typingDot 1.4s infinite;
 
     &:nth-child(2) {
       animation-delay: 0.2s;
@@ -237,13 +247,13 @@
   }
 }
 
-@keyframes typing {
+@keyframes typingDot {
   0%, 60%, 100% {
     transform: translateY(0);
     opacity: 0.4;
   }
   30% {
-    transform: translateY(-8px);
+    transform: translateY(-3px);
     opacity: 1;
   }
 }
