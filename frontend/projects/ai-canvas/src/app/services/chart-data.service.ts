@@ -52,9 +52,30 @@ export class ChartDataService {
    * Update a chart's properties
    */
   updateChart(id: string, updates: Partial<DashboardItem>): void {
-    const items = this.dashboardItemsSubject.value.map(item =>
-      item.id === id ? { ...item, ...updates } : item
-    );
+    const items = this.dashboardItemsSubject.value.map(item => {
+      if (item.id === id) {
+        // Deep merge config if it exists in updates
+        if (updates.config) {
+          const merged = {
+            ...item,
+            ...updates,
+            config: {
+              ...item.config,
+              ...updates.config
+            }
+          };
+          console.log('[ChartDataService] Updating chart:', {
+            chartId: id,
+            oldConfig: item.config,
+            newConfig: updates.config,
+            mergedConfig: merged.config
+          });
+          return merged;
+        }
+        return { ...item, ...updates };
+      }
+      return item;
+    });
     this.dashboardItemsSubject.next(items);
   }
 
@@ -117,6 +138,30 @@ export class ChartDataService {
    */
   generateId(): string {
     return `chart-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  }
+
+  /**
+   * Highlight a chart with animation (for newly created/updated charts)
+   */
+  highlightChart(id: string): void {
+    // Select the chart
+    this.selectChart(id);
+    
+    // Add temporary highlight class
+    const items = this.dashboardItemsSubject.value.map(item => ({
+      ...item,
+      isHighlighted: item.id === id
+    }));
+    this.dashboardItemsSubject.next(items);
+    
+    // Remove highlight after 3 seconds
+    setTimeout(() => {
+      const items = this.dashboardItemsSubject.value.map(item => ({
+        ...item,
+        isHighlighted: false
+      }));
+      this.dashboardItemsSubject.next(items);
+    }, 3000);
   }
 }
 

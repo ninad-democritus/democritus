@@ -2,6 +2,6 @@ fastapi==0.114.2
 uvicorn[standard]==0.30.6
 python-multipart==0.0.9
 minio==7.2.10
-pydantic==2.9.2
+pydantic>=2.6.0,<3.0.0  # Aligned with other services
 
 

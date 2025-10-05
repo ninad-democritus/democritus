@@ -22,7 +22,7 @@
         <div class="context-type">{{ selectedChart.chartType.name }} ({{ selectedChart.cols }}x{{ selectedChart.rows }})</div>
         <div class="context-title">{{ selectedChart.config.title }}</div>
       </div>
-      <button class="context-close" (click)="clearSelection()" title="Clear selection">
+      <button class="context-close" (click)="clearSelection(); $event.stopPropagation()" title="Clear selection">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M18 6L6 18M6 6l12 12" />
         </svg>
@@ -53,15 +53,14 @@
 
         <div class="message-content">
           <div class="message-bubble">
-            <div class="message-text">{{ message.content }}</div>
+            <div class="message-text" [class.status-text]="message.queryInProgress">
+              {{ message.content }}
+              <!-- Typing indicator inline with text when query is in progress -->
+              <span class="typing-dots" *ngIf="message.queryInProgress">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+              </span>
+            </div>
             <div class="message-time">{{ formatTime(message.timestamp) }}</div>
-          </div>
-
-          <!-- Loading animation -->
-          <div class="typing-indicator" *ngIf="message.queryInProgress">
-            <span></span>
-            <span></span>
-            <span></span>
           </div>
         </div>
 
@@ -97,7 +96,8 @@
       </button>
     </div>
 
-    <div class="input-hint" *ngIf="!selectedChart">
+    <!-- Show tip only once, not after each chart click -->
+    <div class="input-hint" *ngIf="!selectedChart && messages.length === 0">
       💡 Tip: Drag a chart type to the grid first, then click it to populate with data
     </div>
   </div>

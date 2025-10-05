@@ -1,28 +1,21 @@
 <div class="dashboard-grid"
      cdkDropList
-     (cdkDropListDropped)="onDrop($event)">
+     id="gridDropList"
+     #gridDropList="cdkDropList"
+     [cdkDropListData]="dashboardItems"
+     [cdkDropListConnectedTo]="['chartLibraryList']"
+     [cdkDropListSortingDisabled]="true"
+     (cdkDropListDropped)="onDrop($event)"
+     (cdkDropListEntered)="onDragEntered($event)"
+     (cdkDropListExited)="onDragExited($event)">
   
-  <!-- Empty state -->
-  <div *ngIf="dashboardItems.length === 0" class="empty-state">
-    <div class="empty-state-content">
-      <div class="empty-icon">
-        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M3 3v18h18M7 12h2v7H7v-7zm4-5h2v12h-2V7zm4 7h2v5h-2v-5z" />
-        </svg>
-      </div>
-      <h3 class="empty-title">Start Building Your Dashboard</h3>
-      <p class="empty-description">
-        Drag charts from the library on the left, or ask the AI assistant on the right to create visualizations for you.
-      </p>
-    </div>
-  </div>
-
-  <!-- Gridster grid -->
-  <gridster *ngIf="dashboardItems.length > 0" [options]="gridsterOptions">
+  <gridster 
+    class="gridster-container"
+    [options]="gridsterOptions">
     <gridster-item
       *ngFor="let item of dashboardItems; trackBy: trackByChartId"
       [item]="item"
-      [ngClass]="{'selected-chart': item.isSelected}">
+      [ngClass]="{'selected-chart': item.isSelected, 'highlighted-chart': item.isHighlighted}">
       
       <app-chart-widget
         [dashboardItem]="item"

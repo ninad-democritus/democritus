@@ -25,10 +25,10 @@ export class DashboardGridComponent implements OnInit, OnDestroy {
   constructor(private chartDataService: ChartDataService) {}
 
   ngOnInit(): void {
-    // Configure gridster
+    // Configure gridster for 24x24 grid
     this.gridsterOptions = {
       gridType: GridType.Fit,
-      displayGrid: DisplayGrid.OnDragAndResize,
+      displayGrid: DisplayGrid.Always,
       pushItems: true,
       swap: false,
       compactType: CompactType.None,
@@ -38,11 +38,11 @@ export class DashboardGridComponent implements OnInit, OnDestroy {
       resizable: {
         enabled: true
       },
-      minCols: 12,
-      maxCols: 12,
-      minRows: 1,
-      margin: 16,
-      outerMargin: true,
+      minCols: 24,
+      maxCols: 24,
+      minRows: 24,
+      margin: 4,
+      outerMargin: false,
       mobileBreakpoint: 640,
       itemChangeCallback: this.onItemChange.bind(this),
       itemResizeCallback: this.onItemResize.bind(this)
@@ -52,6 +52,7 @@ export class DashboardGridComponent implements OnInit, OnDestroy {
     this.chartDataService.dashboardItems$
       .pipe(takeUntil(this.destroy$))
       .subscribe(items => {
+        console.log('[DashboardGrid] Dashboard items updated:', items.length);
         this.dashboardItems = items;
       });
   }
@@ -62,19 +63,86 @@ export class DashboardGridComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Called when drag enters the grid
+   */
+  onDragEntered(event: any): void {
+    console.log('[DashboardGrid] Drag entered grid');
+  }
+
+  /**
+   * Called when drag exits the grid
+   */
+  onDragExited(event: any): void {
+    console.log('[DashboardGrid] Drag exited grid');
+  }
+
+  /**
    * Handle drop from chart library
+   * Note: We COPY items from library, not MOVE them
    */
   onDrop(event: CdkDragDrop<any>): void {
-    const chartType: ChartType = event.item.data;
+    console.log('[DashboardGrid] Drop event received:', {
+      previousContainer: event.previousContainer.id,
+      currentContainer: event.container.id,
+      previousIndex: event.previousIndex,
+      currentIndex: event.currentIndex,
+      isPointerOverContainer: event.isPointerOverContainer,
+      dropPoint: event.dropPoint,
+      itemData: event.item.data
+    });
     
-    // Calculate drop position in grid coordinates
-    const dropX = 0; // TODO: Calculate based on drop position
-    const dropY = this.calculateNextY();
+    // If from different container (library), we COPY the template
+    // If same container, we REORDER (but gridster handles that, so we ignore)
+    if (event.previousContainer === event.container) {
+      console.log('[DashboardGrid] Same container - gridster handles reordering');
+      return;
+    }
 
-    // Create new dashboard item
+    // Get the chart type template from the dragged item
+    const chartType: ChartType = event.item.data;
+    if (!chartType) {
+      console.warn('[DashboardGrid] No chart type data in drop event');
+      return;
+    }
+
+    console.log('[DashboardGrid] Creating chart from template:', chartType.name);
+    
+    // Get gridster element and calculate grid position
+    const gridsterEl = event.container.element.nativeElement;
+    const rect = gridsterEl.getBoundingClientRect();
+    const dropPoint = event.dropPoint;
+    
+    // Calculate relative position within gridster
+    const relativeX = dropPoint.x - rect.left;
+    const relativeY = dropPoint.y - rect.top;
+    
+    // Calculate grid cell size dynamically for Fit type
+    const gridWidth = rect.width;
+    const gridHeight = rect.height;
+    const cellWidth = gridWidth / 24;
+    const cellHeight = gridHeight / 24;
+    
+    // Convert to grid coordinates
+    const gridX = Math.floor(relativeX / cellWidth);
+    const gridY = Math.floor(relativeY / cellHeight);
+    
+    // Ensure position is within grid bounds
+    const dropX = Math.max(0, Math.min(gridX, 24 - chartType.defaultSize.cols));
+    const dropY = Math.max(0, Math.min(gridY, 24 - chartType.defaultSize.rows));
+    
+    console.log('[DashboardGrid] Position calculated:', {
+      dropPoint,
+      rect: { width: rect.width, height: rect.height },
+      relative: { x: relativeX, y: relativeY },
+      cellSize: { width: cellWidth, height: cellHeight },
+      gridCoords: { x: gridX, y: gridY },
+      finalPosition: { x: dropX, y: dropY }
+    });
+
+    // Create new dashboard item (COPY, not move)
     const newItem: DashboardItem = {
       id: this.chartDataService.generateId(),
-      chartType: chartType,
+      chartType: { ...chartType }, // Clone the chart type
       x: dropX,
       y: dropY,
       cols: chartType.defaultSize.cols,
@@ -85,20 +153,22 @@ export class DashboardGridComponent implements OnInit, OnDestroy {
       }
     };
 
+    // Add to grid (service will emit update)
     this.chartDataService.addChart(newItem);
+    console.log('[DashboardGrid] Chart added successfully:', newItem);
+    
+    // IMPORTANT: Don't modify the source array (chartTypes)
+    // This ensures the library item stays in place
   }
 
   /**
    * Handle chart selection for AI context
+   * Always selects the clicked chart (no toggle)
    */
   onChartClick(item: DashboardItem): void {
-    const isCurrentlySelected = item.isSelected;
-    
-    if (isCurrentlySelected) {
-      this.chartDataService.selectChart(null); // Deselect
-    } else {
-      this.chartDataService.selectChart(item.id); // Select
-    }
+    // Always select the chart - no toggle behavior
+    // This ensures only one chart is selected at a time
+    this.chartDataService.selectChart(item.id);
   }
 
   /**

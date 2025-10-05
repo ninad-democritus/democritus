@@ -13,20 +13,41 @@ import { CHART_TYPES, ChartType } from '../../../../models/chart-type.model';
   styleUrl: './chart-library.component.scss'
 })
 export class ChartLibraryComponent {
-  chartTypes = CHART_TYPES;
+  // Use a COPY of chart types to prevent CDK from modifying the original
+  chartTypes = [...CHART_TYPES];
+  private readonly originalChartTypes = CHART_TYPES;
 
   // Track which chart is being dragged
   draggedChartType: ChartType | null = null;
 
+  // Prevent items from being dropped back into the library
+  returnFalse = () => false;
+
   onDragStarted(event: CdkDragStart, chartType: ChartType): void {
     this.draggedChartType = chartType;
+    console.log('[ChartLibrary] Drag started:', chartType.name);
   }
 
   onDragEnded(): void {
+    // Restore the chart types array after drag ends
+    // This ensures items removed by CDK during drag are restored
+    this.chartTypes = [...this.originalChartTypes];
+    console.log('[ChartLibrary] Drag ended, array restored');
+    
     // Small delay to allow drop event to complete
     setTimeout(() => {
       this.draggedChartType = null;
     }, 100);
+  }
+
+  /**
+   * Handle drop events in library (should never happen due to returnFalse predicate)
+   * If it does happen, we restore the array
+   */
+  onLibraryDrop(event: any): void {
+    console.log('[ChartLibrary] Drop event (restoring array):', event);
+    // Restore the original array since items should never leave the library
+    this.chartTypes = [...this.originalChartTypes];
   }
 
   getChartIcon(iconName: string): string {
