@@ -57,8 +57,8 @@
 }
 
 .step-indicator {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: var(--icon-2xl);
+  height: var(--icon-2xl);
   border-radius: var(--radius-full);
   display: flex;
   align-items: center;
@@ -147,9 +147,9 @@
 
 .step-connector {
   position: absolute;
-  left: 1.25rem; // Center of indicator
-  top: 2.5rem; // Below indicator
-  bottom: -1rem; // Extend to next step
+  left: calc(var(--icon-2xl) / 2); // Center of indicator
+  top: var(--icon-2xl); // Below indicator
+  bottom: calc(-1 * var(--spacing-lg)); // Extend to next step
   width: 2px;
   transform: translateX(-50%);
   
@@ -196,14 +196,14 @@
   }
   
   .step-indicator {
-    width: 2rem;
-    height: 2rem;
+    width: var(--icon-xl);
+    height: var(--icon-xl);
     font-size: var(--font-size-xs);
   }
   
   .step-connector {
-    left: 1rem;
-    top: 2rem;
+    left: calc(var(--icon-xl) / 2);
+    top: var(--icon-xl);
   }
   
   .step-title {

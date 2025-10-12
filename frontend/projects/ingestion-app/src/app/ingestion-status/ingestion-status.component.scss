@@ -164,6 +164,13 @@ app-connection-status {
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-medium);
   color: var(--color-success-600);
+  
+  svg {
+    width: var(--icon-lg);
+    height: var(--icon-lg);
+    display: block;
+    flex-shrink: 0;
+  }
 }
 
 .proceed-button {
@@ -171,17 +178,24 @@ app-connection-status {
   align-items: center;
   gap: var(--spacing-sm);
   padding: var(--spacing-sm) var(--spacing-lg);
-  background-color: var(--button-accent-bg);
-  color: var(--button-accent-text);
-  border: 1px solid var(--button-accent-border);
+  background-color: var(--button-primary-bg);
+  color: var(--button-primary-text);
+  border: 1px solid var(--button-primary-border);
   border-radius: var(--radius-md);
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: var(--transition-colors), var(--transition-shadow);
   
+  svg {
+    width: var(--icon-md);
+    height: var(--icon-md);
+    display: block;
+    flex-shrink: 0;
+  }
+  
   &:hover {
-    background-color: var(--button-accent-bg-hover);
+    background-color: var(--button-primary-bg-hover);
     box-shadow: var(--shadow-sm);
   }
 }

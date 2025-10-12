@@ -4,11 +4,29 @@
 
   <!-- Main Layout (offset by sidebar) -->
   <div class="main-layout">
-    <!-- Global Header with User Menu & Notifications -->
-    <lib-app-header></lib-app-header>
+    <!-- Global Header with App-Specific Navigation -->
+    <lib-app-header>
+      <!-- Dashboard Navigation (AI Canvas only) -->
+      <nav appNavigation class="app-nav" *ngIf="isAiCanvasRoute()">
+        <a 
+          routerLink="/ai-canvas/dashboards" 
+          class="nav-link"
+          [class.active]="isDashboardsRoute()"
+        >
+          My Dashboards
+        </a>
+        <a 
+          routerLink="/ai-canvas/create" 
+          class="nav-link"
+          [class.active]="isCreateDashboardRoute()"
+        >
+          Create Dashboard
+        </a>
+      </nav>
+    </lib-app-header>
 
     <!-- Content Area for Remote Apps -->
-    <main class="content-area">
+    <main class="content-area" #contentArea>
       <router-outlet></router-outlet>
     </main>
   </div>

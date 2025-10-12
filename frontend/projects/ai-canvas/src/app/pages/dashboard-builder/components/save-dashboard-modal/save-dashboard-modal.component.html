@@ -1,0 +1,103 @@
+<div *ngIf="isOpen" class="modal-overlay" (click)="onCancel()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <h2>Save Dashboard</h2>
+      <button class="close-btn" (click)="onCancel()" aria-label="Close">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body">
+      
+      <!-- Dashboard Name -->
+      <div class="form-group">
+        <label for="dashboard-name">Dashboard Name *</label>
+        <input
+          id="dashboard-name"
+          type="text"
+          [(ngModel)]="formData.name"
+          placeholder="Enter dashboard name"
+          class="form-input"
+          [class.error]="formData.name.length > 0 && formData.name.length < 3"
+        />
+        <span class="error-text" *ngIf="formData.name.length > 0 && formData.name.length < 3">
+          Name must be at least 3 characters
+        </span>
+      </div>
+
+      <!-- Dashboard Visibility -->
+      <div class="form-group">
+        <label>Dashboard Visibility *</label>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input
+              type="radio"
+              name="visibility"
+              value="private"
+              [(ngModel)]="formData.visibility"
+            />
+            <span>Private</span>
+          </label>
+          <label class="radio-label">
+            <input
+              type="radio"
+              name="visibility"
+              value="public"
+              [(ngModel)]="formData.visibility"
+            />
+            <span>Public</span>
+          </label>
+        </div>
+        <p class="help-text">Private dashboards are only visible to you</p>
+      </div>
+
+      <!-- Dashboard Type -->
+      <div class="form-group">
+        <label>Dashboard Type *</label>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input
+              type="radio"
+              name="dashboardType"
+              value="static"
+              [(ngModel)]="formData.dashboardType"
+            />
+            <span>Static</span>
+          </label>
+          <label class="radio-label">
+            <input
+              type="radio"
+              name="dashboardType"
+              value="dynamic"
+              [(ngModel)]="formData.dashboardType"
+            />
+            <span>Dynamic</span>
+          </label>
+        </div>
+        <p class="help-text">Dynamic dashboards refresh data on each load</p>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+      <button class="btn btn-cancel" (click)="onCancel()">
+        Cancel
+      </button>
+      <button
+        class="btn btn-save"
+        (click)="onSave()"
+        [disabled]="!isFormValid">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
+        </svg>
+        Save Dashboard
+      </button>
+    </div>
+  </div>
+</div>
+

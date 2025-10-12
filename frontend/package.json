@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --host 0.0.0.0 --port 4200 --disable-host-check",
+    "start": "ng serve --host 0.0.0.0 --port 4200 --disable-host-check --proxy-config proxy.conf.json",
     "build": "ng build --configuration=production",
     "run:all": "node node_modules/@angular-architects/module-federation/src/server/mf-dev-server.js"
   },

@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     OPENMETADATA_API_ENDPOINT: str = "http://openmetadata-server:8585/api"
     OPENMETADATA_JWT_TOKEN: str = ""
     OPENMETADATA_TIMEOUT: int = 30
+    OPENMETADATA_SERVICE_NAME: str = "data-pipeline-service"  # Service name in OpenMetadata
     
     # Trino Configuration
     TRINO_HOST: str = "trino"

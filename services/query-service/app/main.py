@@ -17,6 +17,7 @@ from .models import (
     HealthCheckResponse
 )
 from .tasks import celery_app, process_query_task
+from .core_api.routes import router as core_api_router
 
 # Set up logging
 logging.basicConfig(
@@ -40,6 +41,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Register Core API routes
+app.include_router(core_api_router)
 
 
 @app.get("/health", response_model=HealthCheckResponse)

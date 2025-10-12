@@ -37,10 +37,12 @@
 }
 
 .connection-dot {
-  width: 8px;
-  height: 8px;
+  width: var(--spacing-sm);
+  height: var(--spacing-sm);
   border-radius: var(--radius-full);
   transition: var(--transition-colors);
+  display: block;
+  flex-shrink: 0;
   
   &.connection-dot-connected {
     background-color: var(--status-connected-dot);
@@ -65,14 +67,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: var(--icon-lg);
+  height: var(--icon-lg);
   background-color: var(--color-primary-100);
   color: var(--color-primary-600);
   border: 1px solid var(--color-primary-200);
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: var(--transition-colors);
+  flex-shrink: 0;
+  
+  svg {
+    width: var(--icon-sm);
+    height: var(--icon-sm);
+    display: block;
+    flex-shrink: 0;
+  }
   
   &:hover {
     background-color: var(--color-primary-500);
@@ -104,8 +114,8 @@
   }
   
   .retry-button {
-    width: 24px;
-    height: 24px;
+    width: var(--icon-md);
+    height: var(--icon-md);
   }
 }
 

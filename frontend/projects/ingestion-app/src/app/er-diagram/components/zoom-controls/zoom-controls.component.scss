@@ -20,14 +20,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: var(--icon-xl);
+  height: var(--icon-xl);
   background-color: var(--button-secondary-bg);
   color: var(--button-secondary-text);
   border: 1px solid var(--button-secondary-border);
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: var(--transition-colors);
+  flex-shrink: 0;
   
   &:hover:not(:disabled) {
     background-color: var(--button-secondary-bg-hover);
@@ -46,8 +47,10 @@
   }
   
   svg {
-    width: 16px;
-    height: 16px;
+    width: var(--icon-sm);
+    height: var(--icon-sm);
+    display: block;
+    flex-shrink: 0;
   }
 }
 
@@ -57,7 +60,7 @@
   font-weight: var(--font-weight-semibold);
   color: var(--text-secondary);
   padding: 0 var(--spacing-sm);
-  min-width: 40px;
+  min-width: var(--icon-2xl);
   text-align: center;
   white-space: nowrap;
 }
