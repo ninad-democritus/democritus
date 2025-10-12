@@ -29,9 +29,11 @@
 }
 
 .summary-icon {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: var(--icon-md);
+  height: var(--icon-md);
   color: var(--color-primary-600);
+  display: block;
+  flex-shrink: 0;
 }
 
 .quick-stats {
@@ -64,7 +66,7 @@
 
 .stat-divider {
   width: 1px;
-  height: 2rem;
+  height: var(--icon-xl);
   background-color: var(--border-medium);
 }
 
@@ -139,8 +141,8 @@
 }
 
 .file-icon {
-  width: 2rem;
-  height: 2rem;
+  width: var(--icon-xl);
+  height: var(--icon-xl);
   background-color: var(--color-primary-100);
   color: var(--color-primary-600);
   border-radius: var(--radius-md);
@@ -148,6 +150,13 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  
+  svg {
+    width: var(--icon-sm);
+    height: var(--icon-sm);
+    display: block;
+    flex-shrink: 0;
+  }
 }
 
 .file-name {
@@ -182,10 +191,12 @@
 }
 
 .empty-icon {
-  width: 3rem;
-  height: 3rem;
+  width: var(--icon-3xl);
+  height: var(--icon-3xl);
   margin: 0 auto var(--spacing-lg) auto;
   color: var(--color-neutral-400);
+  display: block;
+  flex-shrink: 0;
 }
 
 .empty-text {
@@ -235,8 +246,8 @@
   }
   
   .empty-icon {
-    width: 2rem;
-    height: 2rem;
+    width: var(--icon-xl);
+    height: var(--icon-xl);
   }
 }
 

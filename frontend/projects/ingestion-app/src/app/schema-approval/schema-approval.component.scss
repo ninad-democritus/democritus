@@ -74,9 +74,9 @@
 }
 
 .approve-button {
-  background-color: var(--button-accent-bg);
-  color: var(--button-accent-text);
-  border: 1px solid var(--button-accent-border);
+  background-color: var(--button-primary-bg);
+  color: var(--button-primary-text);
+  border: 1px solid var(--button-primary-border);
   padding: var(--spacing-sm) var(--spacing-lg);
   font-size: var(--font-size-base); // Reduced size
   font-weight: var(--font-weight-semibold);
@@ -87,13 +87,20 @@
   align-items: center;
   gap: var(--spacing-sm);
   
+  svg {
+    width: var(--icon-md);
+    height: var(--icon-md);
+    display: block;
+    flex-shrink: 0;
+  }
+  
   &:hover:not(:disabled) {
-    background-color: var(--button-accent-bg-hover);
+    background-color: var(--button-primary-bg-hover);
     box-shadow: var(--shadow-sm);
   }
   
   &:active:not(:disabled) {
-    background-color: var(--button-accent-bg-active);
+    background-color: var(--button-primary-bg-active);
     box-shadow: none;
   }
   
@@ -114,8 +121,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px; // Fixed square button
-  height: 44px;
+  width: var(--icon-2xl); // Fixed square button
+  height: var(--icon-2xl);
+  flex-shrink: 0;
+  
+  svg {
+    width: var(--icon-lg);
+    height: var(--icon-lg);
+    display: block;
+    flex-shrink: 0;
+  }
   
   &:hover:not(:disabled) {
     background-color: var(--button-secondary-bg-hover);
@@ -129,6 +144,7 @@
 .success-message {
   display: inline-flex;
   align-items: center;
+  gap: var(--spacing-xs);
   background-color: var(--status-connected-bg);
   color: var(--status-connected-text);
   border: 1px solid var(--status-connected-border);
@@ -136,6 +152,13 @@
   padding: var(--spacing-xs) var(--spacing-sm);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
+  
+  svg {
+    width: var(--icon-xs);
+    height: var(--icon-xs);
+    display: block;
+    flex-shrink: 0;
+  }
 }
 
 // Loading and Error States
@@ -150,13 +173,15 @@
 }
 
 .loading-spinner {
-  width: 2rem;
-  height: 2rem;
+  width: var(--icon-xl);
+  height: var(--icon-xl);
   border: 2px solid var(--color-neutral-200);
   border-top: 2px solid var(--color-primary-500);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: var(--spacing-lg);
+  display: block;
+  flex-shrink: 0;
 }
 
 @keyframes spin {
@@ -218,8 +243,8 @@
   }
   
   .back-button {
-    width: 40px;
-    height: 40px;
+    width: var(--icon-2xl);
+    height: var(--icon-2xl);
   }
 }
 

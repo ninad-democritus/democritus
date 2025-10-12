@@ -1,13 +1,15 @@
-.canvas-container {
+// AI Canvas MFE - minimal container styles
+// Header and navigation are handled by host shell
+
+.ai-canvas-root {
+  display: block;
+  width: 100%;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background: var(--bg-page-solid, #f9fafb);
+  position: relative;
+  
+  // Ensure content doesn't stack
+  > * {
+    position: relative;
+    width: 100%;
+  }
 }
-
-.canvas-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-

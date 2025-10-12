@@ -33,12 +33,18 @@ IF YOU SEE "(No filters - omit WHERE clause entirely)", SKIP THE WHERE CLAUSE CO
 - If metric column doesn't exist in schema, use COUNT(*)
 - Don't invent columns or assume they exist
 - Use ONLY the columns shown in the schema
+- Only reference columns from tables that are in your FROM clause
+- Never use Table.Column format unless Table is explicitly in FROM clause
 
 **FORBIDDEN PATTERNS:**
+- ❌ Window functions: OVER(), PARTITION BY, ROW_NUMBER(), RANK()
+- ❌ Nested aggregations: SUM(COUNT(*)), AVG(SUM()), etc.
 - ❌ WHERE 1=0, WHERE 1=1, WHERE with no filters
 - ❌ JOIN when all columns exist in one table
 - ❌ Subqueries in WHERE clause
 - ❌ Invented filters or conditions
+- ❌ Referencing columns from tables not in FROM clause
+- ❌ Using Table.Column when Table is not in FROM
 
 **Important Rules:**
 1. Use fully qualified table names: `catalog.schema.table_name`
@@ -122,12 +128,21 @@ ORDER BY LOWER(Category)
 - Column names in SELECT/GROUP BY/ORDER BY must be bare column references
 
 **CRITICAL - Metric Calculation Rules:**
+- **NEVER use window functions** - No OVER(), PARTITION BY, ROW_NUMBER(), RANK(), etc.
 - **NEVER use CASE statements** - They always lead to invented conditions
-- **NEVER add conditions inside aggregation functions** - No SUM(CASE WHEN...), no COUNT(CASE WHEN...)
-- Use ONLY these aggregations: COUNT(*), SUM(column), AVG(column), MAX(column), MIN(column)
-- If metric name doesn't match a column, use COUNT(*)
-- For "percentage", "count", "total", "number": use COUNT(*)
-- For "sum", "total_amount", "revenue": use SUM(column) only if column exists
+- **NEVER nest aggregations** - No SUM(COUNT(*)), AVG(SUM()), etc.
+- Use ONLY simple aggregations: COUNT(*), SUM(column), AVG(column), MAX(column), MIN(column)
+- **If metric name doesn't exist as a column in schema, use COUNT(*)** - Don't invent columns
+- **NEVER reference columns that don't exist in the provided schema**
+- Aggregation value from intent tells you which function to use (SUM, AVG, COUNT, etc.)
+
+**CRITICAL - Filter Column Mapping Rules:**
+- **Check the schema**: Filter key must match an actual column name in the schema
+- **If filter key matches a column name**: Use that column in WHERE clause
+- **If filter key doesn't match exactly**: Find the most similar column name from schema
+- **ONLY use columns from tables in your FROM clause** - Never reference other tables
+- **NEVER use Table.Column format** unless you have a JOIN with that table
+- Use LOWER() for case-insensitive comparison: WHERE LOWER(column) = LOWER('value')
 
 **WRONG EXAMPLES (NEVER DO THIS):**
 ❌ Metrics: ['column_x_values'], Filters: None → WHERE LOWER(column_x) = LOWER('value')
@@ -179,15 +194,38 @@ Filters value above: {filters}
    - ONLY source: Filters line above
    - Filters: "(No filters - omit WHERE clause entirely)" → **NO WHERE AT ALL**
    - Filters: "None" or {{}} → **NO WHERE AT ALL**
-   - Filters: {{"col": "val"}} → Add WHERE LOWER(col) = LOWER('val')
+   - Filters: {{"col": "val"}} → Find matching column in schema, use bare column name
    
    **NEVER create WHERE from:**
    - Metrics list (these are for SELECT aggregation)
    - Dimensions list (these are for GROUP BY)
    - Column names that appear in metrics/dimensions
    - Any inference or assumption
+   
+   **Filter Column Mapping:**
+   - Filter keys should match schema column names
+   - If filter key doesn't exist in schema, find best matching column
+   - Use LOWER() for case-insensitive comparison: WHERE LOWER(column) = LOWER('value')
 
-4. **Aggregations:** Use COUNT(*) for metrics unless column exists
+4. **Aggregations:**
+   - Look at the Aggregations dict to see which function to use (COUNT, SUM, AVG, etc.)
+   - Check if metric name exists as a column in the schema
+   - If metric exists as column: Apply aggregation to that column (e.g., SUM(column), AVG(column))
+   - If metric does NOT exist as column: Use COUNT(*) regardless of aggregation type
+   - **NEVER use window functions (OVER, PARTITION BY)**
+   - **NEVER nest aggregations (SUM(COUNT(*)))**
+
+**EXAMPLES OF CORRECT SQL GENERATION:**
+
+Example 1 - Metric doesn't exist in schema:
+Metrics: ["percentage"], Schema columns: [Name, Age, Status]
+✓ CORRECT: SELECT Status, COUNT(*) as percentage FROM ...
+✗ WRONG: SELECT Status, AVG(SomeInventedColumn) as percentage FROM ...
+
+Example 2 - Use only schema columns:
+Filters: {{"status": "active"}}, Schema columns: [ID, Name, Status, Age]
+✓ CORRECT: WHERE LOWER(Status) = LOWER('active')
+✗ WRONG: WHERE LOWER(NonExistentColumn) = LOWER('active')
 
 Return JSON:
 {{
@@ -232,9 +270,18 @@ GOOD: SELECT column_x, COUNT(*) FROM table WHERE ... GROUP BY column_x (only add
    - Filters = "None" or {{}} → **NO WHERE**
    - NEVER create WHERE from metrics, dimensions, or column names
    - Example: Metric name containing "column_x" does NOT mean WHERE column_x = anything
+   - Filter keys should match schema columns
 3. Use LOWER() only in WHERE, not in SELECT/GROUP BY
-4. Use COUNT(*) for metrics unless specific column exists
-5. NO CASE statements or invented conditions
+4. **Metrics → Schema mapping:**
+   - Check if metric name exists as column in schema
+   - If YES: use appropriate aggregation on that column
+   - If NO: use COUNT(*) - never invent columns
+5. **FORBIDDEN:**
+   - Window functions (OVER, PARTITION BY)
+   - Nested aggregations (SUM(COUNT(*)))
+   - CASE statements or invented conditions
+   - Referencing columns/tables not in schema or FROM clause
+   - Using Table.Column when Table not in FROM
 
 **FORBIDDEN:** WHERE clause when Filters is empty, regardless of metric/dimension names
 

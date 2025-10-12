@@ -29,7 +29,10 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, {enableTracing: true})],
+  imports: [RouterModule.forRoot(routes, {
+    enableTracing: true, // Disable for production
+    /* onSameUrlNavigation: 'reload' // Force reload on same URL */
+  })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

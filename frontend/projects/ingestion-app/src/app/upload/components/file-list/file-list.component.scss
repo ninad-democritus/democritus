@@ -48,14 +48,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: var(--icon-xl);
+  height: var(--icon-xl);
   background-color: var(--color-error-100);
   color: var(--color-error-600);
   border: 1px solid var(--color-error-200);
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: var(--transition-colors);
+  flex-shrink: 0;
+  
+  svg {
+    width: var(--icon-sm);
+    height: var(--icon-sm);
+    display: block;
+    flex-shrink: 0;
+  }
   
   &:hover {
     background-color: var(--color-error-500);

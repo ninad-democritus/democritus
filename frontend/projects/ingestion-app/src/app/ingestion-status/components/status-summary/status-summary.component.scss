@@ -97,8 +97,9 @@
 }
 
 .message-icon {
-  width: 1rem;
-  height: 1rem;
+  width: var(--icon-sm);
+  height: var(--icon-sm);
+  display: block;
   flex-shrink: 0;
 }
 

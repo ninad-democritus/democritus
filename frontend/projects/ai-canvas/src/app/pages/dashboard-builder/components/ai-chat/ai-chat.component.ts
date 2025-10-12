@@ -4,7 +4,7 @@
  * Supports async query processing with real-time progress updates
  */
 
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewChecked, NgZone } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Subject, takeUntil, distinctUntilChanged } from 'rxjs';
 import { AIChatService } from '../../../../services/ai-chat.service';
@@ -23,6 +23,7 @@ import {
   ChartGenerationResult,
   STAGE_INFO
 } from '../../../../models/query-service.model';
+import { runInZone } from '../../../../utils/zone-operators';
 
 @Component({
   selector: 'app-ai-chat',
@@ -50,6 +51,7 @@ export class AIChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   selectedChartIdAtQueryStart: string | null = null; // Store the ID at query start to prevent stale references
 
   constructor(
+    private zone: NgZone,
     private aiChatService: AIChatService,
     private chartDataService: ChartDataService,
     private queryService: QueryService
@@ -57,8 +59,12 @@ export class AIChatComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   ngOnInit(): void {
     // Subscribe to messages
+    // Using runInZone to ensure change detection works in Module Federation
     this.aiChatService.messages$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        runInZone(this.zone),
+        takeUntil(this.destroy$)
+      )
       .subscribe(messages => {
         this.messages = messages;
         this.shouldScrollToBottom = true;
@@ -68,11 +74,12 @@ export class AIChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.chartDataService.selectedChartId$
       .pipe(
         distinctUntilChanged(), // Only emit when the ID actually changes
+        runInZone(this.zone),
         takeUntil(this.destroy$)
       )
       .subscribe(chartId => {
         this.selectedChart = chartId ? this.chartDataService.getSelectedChart() : null;
-        console.log('[AIChatComponent] Selected chart updated:', this.selectedChart?.id);
+        /* console.log('[AIChatComponent] Selected chart updated:', this.selectedChart?.id); */
       });
   }
 
@@ -128,7 +135,7 @@ export class AIChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     
     // CRITICAL: Store the selected chart ID at query start to prevent stale reference issues
     this.selectedChartIdAtQueryStart = this.selectedChart?.id || null;
-    console.log('[AIChatComponent] Starting query with selected chart ID:', this.selectedChartIdAtQueryStart);
+    /* console.log('[AIChatComponent] Starting query with selected chart ID:', this.selectedChartIdAtQueryStart); */
 
     // Add AI "thinking" message
     const aiMessageId = this.generateId();
@@ -166,7 +173,10 @@ export class AIChatComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     // Connect to query service with WebSocket
     this.queryService.generateChartWithProgress(request)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        runInZone(this.zone),
+        takeUntil(this.destroy$)
+      )
       .subscribe({
         next: (message: WebSocketMessage) => {
           this.handleWebSocketMessage(message, aiMessageId);
@@ -175,7 +185,7 @@ export class AIChatComponent implements OnInit, OnDestroy, AfterViewChecked {
           this.handleQueryError(error, aiMessageId);
         },
         complete: () => {
-          console.log('[AIChatComponent] Query processing completed');
+          /* console.log('[AIChatComponent] Query processing completed'); */
         }
       });
   }
@@ -184,7 +194,7 @@ export class AIChatComponent implements OnInit, OnDestroy, AfterViewChecked {
    * Handle WebSocket messages
    */
   private handleWebSocketMessage(message: WebSocketMessage, aiMessageId: string): void {
-    console.log('[AIChatComponent] Received message:', message);
+/*     console.log('[AIChatComponent] Received message:', message); */
 
     switch (message.type) {
       case 'CONNECTED':
@@ -238,8 +248,8 @@ export class AIChatComponent implements OnInit, OnDestroy, AfterViewChecked {
    * Handle successful query completion
    */
   private handleQuerySuccess(result: ChartGenerationResult, aiMessageId: string): void {
-    console.log('[AIChatComponent] Query succeeded:', result);
-    console.log('[AIChatComponent] Updating message with ID:', aiMessageId, 'to set queryInProgress: false');
+    /* console.log('[AIChatComponent] Query succeeded:', result);
+    console.log('[AIChatComponent] Updating message with ID:', aiMessageId, 'to set queryInProgress: false'); */
 
     // CRITICAL: Explicitly set queryInProgress to false to stop the animation
     this.aiChatService.updateMessage(aiMessageId, {
@@ -251,17 +261,17 @@ export class AIChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     let chartId: string;
     
     // Use the stored ID from query start to prevent stale reference issues
-    console.log('[AIChatComponent] selectedChartIdAtQueryStart:', this.selectedChartIdAtQueryStart);
-    console.log('[AIChatComponent] Current selected chart:', this.selectedChart?.id);
+    /* console.log('[AIChatComponent] selectedChartIdAtQueryStart:', this.selectedChartIdAtQueryStart);
+    console.log('[AIChatComponent] Current selected chart:', this.selectedChart?.id); */
     
     if (this.selectedChartIdAtQueryStart) {
       // Update existing chart
       chartId = this.selectedChartIdAtQueryStart;
-      console.log('[AIChatComponent] Updating existing chart:', chartId);
+      /* console.log('[AIChatComponent] Updating existing chart:', chartId); */
       
       // Verify the chart still exists
       const chartExists = this.chartDataService.getDashboardItems().find(item => item.id === chartId);
-      console.log('[AIChatComponent] Chart exists:', !!chartExists, chartExists?.id);
+      /* console.log('[AIChatComponent] Chart exists:', !!chartExists, chartExists?.id); */
       
       this.chartDataService.updateChart(chartId, {
         config: {
@@ -274,7 +284,7 @@ export class AIChatComponent implements OnInit, OnDestroy, AfterViewChecked {
       });
     } else {
       // Create new chart
-      console.log('[AIChatComponent] Creating new chart (no selected chart at query start)');
+      /* console.log('[AIChatComponent] Creating new chart (no selected chart at query start)'); */
       chartId = this.chartDataService.generateId(); // Use service's ID generator with 'chart-' prefix
       const newChart: DashboardItem = {
         id: chartId,

@@ -38,6 +38,21 @@ export interface ChartConfig {
   
   // Metadata from Query Service
   queryMetadata?: QueryMetadata;
+  
+  // Hydration error (for dynamic dashboards that failed to load data)
+  hydration_error?: {
+    message: string;
+    errors?: string[];
+    widget_id: string;
+    timestamp: string;
+  };
+  
+  // Hydration metadata (for successfully loaded dynamic dashboards)
+  hydration_metadata?: {
+    hydrated_at: string;
+    row_count: number;
+    chart_type: string;
+  };
 }
 
 /**

@@ -1,3 +1,4 @@
+<!-- Dashboard Builder Main Container -->
 <div class="dashboard-builder">
   <!-- Chart Library (Left Panel) -->
   <app-chart-library class="chart-library-panel"></app-chart-library>
@@ -8,4 +9,11 @@
   <!-- AI Chat (Right Panel) -->
   <app-ai-chat class="ai-chat-panel"></app-ai-chat>
 </div>
+
+<!-- Save Dashboard Modal (outside main container to avoid overflow issues) -->
+<app-save-dashboard-modal
+  [isOpen]="showSaveModal"
+  (save)="onSaveDashboard($event)"
+  (cancel)="closeSaveModal()"
+></app-save-dashboard-modal>
 

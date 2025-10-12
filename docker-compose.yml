@@ -11,6 +11,7 @@ services:
       - agent-workflow
       - data-pipeline
       - query-service
+      - dashboard-service
     restart: unless-stopped
 
   # MFE Host Application (Shell)
@@ -204,6 +205,32 @@ services:
       - openmetadata-server
     restart: unless-stopped
 
+  # Dashboard Service
+  dashboard-service:
+    build:
+      context: ./services/dashboard-service
+      dockerfile: Dockerfile
+    environment:
+      - DB_HOST=postgresql
+      - DB_PORT=5432
+      - DB_USER=openmetadata_user
+      - DB_PASSWORD=openmetadata_password
+      - DB_NAME=openmetadata_db
+      - DB_SCHEMA=dashboards_db
+      - QUERY_SERVICE_URL=http://query-service:8000
+      - SERVICE_HOST=dashboard-service
+      - SERVICE_PORT=8000
+      - LOG_LEVEL=INFO
+    depends_on:
+      - postgresql
+      - query-service
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   # Trino Query Engine
   trino:
     image: trinodb/trino:458
@@ -243,6 +270,8 @@ services:
       - "5432:5432"
     volumes:
       - postgresql_data:/var/lib/postgresql/data
+      - ./infra/postgres/init-openmetadata.sql:/docker-entrypoint-initdb.d/01-init-openmetadata.sql:ro
+      - ./infra/postgres/init-dashboards.sql:/docker-entrypoint-initdb.d/02-init-dashboards.sql:ro
     networks:
       - default
     healthcheck:

@@ -14,6 +14,12 @@ Your task is to extract:
 - **Dimensions** = grouping categories (answer: "group BY what?")
 - **Filters** = specific values to filter by (answer: "WHERE what = value?")
 
+**CRITICAL - Extracting Filter Column Names:**
+- Look for patterns like "for [column] [value]", "of [column] [value]", "in [column] [value]"
+- The word immediately after "for/of/in" is often the COLUMN NAME
+- **Use the literal word from the query as the filter key** - do not translate or interpret
+- **DO NOT convert to semantic equivalents** - use the actual words from the query
+
 Examples:
 
 Query: "Show me total sales by region for Q4 2024"
@@ -59,7 +65,12 @@ Query: "Sales breakdown by gender for product X"
 }
 Explanation: Group BY gender (dimension), WHERE product='X' (filter)
 
-**Key Rule**: If a phrase says "for [specific value]" or "of [specific value]", that value goes in filters, not dimensions.
+**Key Rules for Filters:**
+1. Pattern "for [word] [value]" → filter key is [word] (literally), filter value is [value]
+2. Pattern "of [word] [value]" → filter key is [word] (literally), filter value is [value]  
+3. Pattern "in [word] [value]" → filter key is [word] (literally), filter value is [value]
+4. **Use the exact words from the query as filter keys** - do not translate or interpret semantically
+5. The word immediately after "for/of/in" becomes the filter key (use it exactly as written)
 
 **CRITICAL - JSON FORMAT REQUIREMENTS:**
 - metrics MUST be simple array of strings: ["sales", "revenue"]

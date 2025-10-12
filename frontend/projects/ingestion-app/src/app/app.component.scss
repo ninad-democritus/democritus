@@ -1,34 +1,15 @@
-// App Component - Ingestion App Styles
+// Ingestion App MFE - minimal container styles
+// Header and navigation are handled by host shell
 
-.app-container {
-  background: var(--bg-page);
+.ingestion-app-root {
+  display: block;
+  width: 100%;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
   position: relative;
-}
-
-.app-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-// Responsive design
-@media (max-width: 768px) {
-  .app-container {
-    min-height: 100vh;
-  }
-}
-
-// Print styles
-@media print {
-  .app-container {
-    background: white !important;
-  }
   
-  // Hide animated background when printing
-  .absolute {
-    display: none !important;
+  // Ensure content doesn't stack
+  > * {
+    position: relative;
+    width: 100%;
   }
 }

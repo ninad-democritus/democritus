@@ -8,6 +8,42 @@
   position: relative;
 }
 
+// Floating save button - Ocean Breeze Theme (Teal)
+.save-button {
+  position: absolute;
+  top: var(--spacing-lg); // Positioned in top-right corner
+  right: var(--spacing-lg);
+  z-index: 1000;
+  width: var(--icon-3xl);
+  height: var(--icon-3xl);
+  border: none;
+  border-radius: 50%; // Circular button
+  background: var(--color-primary-500);
+  color: var(--text-inverse);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(20, 184, 166, 0.25); // Elevated shadow
+  transition: all 0.2s ease-in-out;
+  
+  &:hover {
+    background: var(--color-primary-600);
+    transform: translateY(-2px); // Lift effect
+    box-shadow: 0 6px 16px rgba(20, 184, 166, 0.35); // More elevated shadow
+  }
+  
+  &:active {
+    transform: translateY(0); // Return to normal position
+    box-shadow: 0 2px 8px rgba(20, 184, 166, 0.25); // Reduced shadow
+  }
+  
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500); // Accessibility outline
+    outline-offset: 2px;
+  }
+}
+
 // Gridster container
 .gridster-container {
   flex: 1;
@@ -22,12 +58,12 @@ gridster {
   width: 100% !important;
   overflow: hidden !important;
   
-  // Grid background pattern - more visible
+  // Grid background pattern - 24x24 grid with 1px lines
   background-image: 
     linear-gradient(to right, rgba(0, 0, 0, 0.12) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(0, 0, 0, 0.12) 1px, transparent 1px);
-  background-size: calc(100% / 24) calc(100% / 24);
-  background-color: #fafafa;
+  background-size: calc(100% / 24) calc(100% / 24); // 24-column/row grid
+  background-color: var(--color-neutral-50);
 }
 
 // Also apply to inner gridster element for displayGrid.Always
@@ -36,31 +72,31 @@ gridster {
     background-image: 
       linear-gradient(to right, rgba(0, 0, 0, 0.12) 1px, transparent 1px),
       linear-gradient(to bottom, rgba(0, 0, 0, 0.12) 1px, transparent 1px) !important;
-    background-size: calc(100% / 24) calc(100% / 24) !important;
+    background-size: calc(100% / 24) calc(100% / 24) !important; // 24-column/row grid
   }
 }
 
 // Selected chart highlight
 .selected-chart {
   :ng-deep gridster-item-inner {
-    border: 2px solid var(--color-primary-500) !important;
-    box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.1) !important;
+    border: 2px solid var(--color-primary-500) !important; // Highlight border
+    box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.1) !important; // Selection glow
   }
 }
 
 // Highlighted chart animation (for newly created charts)
 .highlighted-chart {
   :ng-deep gridster-item-inner {
-    animation: chartPulse 2s ease-in-out;
+    animation: chartPulse 2s ease-in-out; // Pulse animation for new charts
   }
 }
 
 @keyframes chartPulse {
   0%, 100% {
-    box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.4);
+    box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.4); // Start/end with no glow
   }
   50% {
-    box-shadow: 0 0 0 20px rgba(20, 184, 166, 0);
+    box-shadow: 0 0 0 20px rgba(20, 184, 166, 0); // Expand and fade glow
   }
 }
 
@@ -76,7 +112,7 @@ gridster {
 // CDK drop list styling
 .cdk-drop-list-dragging {
   .cdk-drag {
-    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1); // Smooth drag animation
   }
 }
 

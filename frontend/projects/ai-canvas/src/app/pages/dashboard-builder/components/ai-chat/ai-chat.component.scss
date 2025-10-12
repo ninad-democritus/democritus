@@ -9,7 +9,7 @@
 
 // Header
 .chat-header {
-  padding: var(--spacing-xl);
+  padding: var(--spacing-md);
   border-bottom: 1px solid var(--border-light);
   background: var(--bg-card);
   flex-shrink: 0;
@@ -26,7 +26,7 @@
   }
 
   h2 {
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-md);
     font-weight: var(--font-weight-semibold);
     color: var(--text-primary);
     margin: 0;
@@ -55,10 +55,10 @@
 }
 
 .context-icon {
-  width: 32px;
-  height: 32px;
+  width: var(--icon-md);
+  height: var(--icon-md);
   border-radius: var(--radius-md);
-  background: white;
+  background: var(--bg-card);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -75,7 +75,7 @@
   font-size: var(--font-size-xs);
   color: var(--color-primary-700);
   font-weight: var(--font-weight-medium);
-  margin-bottom: 2px;
+  margin-bottom: 2px; // Minimal spacing for title
 }
 
 .context-title {
@@ -87,10 +87,10 @@
 }
 
 .context-close {
-  width: 24px;
-  height: 24px;
+  width: var(--icon-md);
+  height: var(--icon-md);
   border: none;
-  background: white;
+  background: var(--bg-card);
   color: var(--text-tertiary);
   border-radius: var(--radius-sm);
   cursor: pointer;
@@ -119,7 +119,7 @@
 
   // Custom scrollbar
   &::-webkit-scrollbar {
-    width: 6px;
+    width: 6px; // Thin scrollbar
   }
 
   &::-webkit-scrollbar-track {
@@ -128,7 +128,7 @@
 
   &::-webkit-scrollbar-thumb {
     background: var(--color-neutral-300);
-    border-radius: 3px;
+    border-radius: 3px; // Rounded scrollbar thumb
 
     &:hover {
       background: var(--color-neutral-400);
@@ -139,7 +139,7 @@
 .messages-list {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: var(--spacing-md);
 }
 
 // Messages
@@ -154,9 +154,9 @@
 }
 
 .message-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
+  width: var(--icon-md);
+  height: var(--icon-md);
+  border-radius: 50%; // Circular avatar
   display: flex;
   align-items: center;
   justify-content: center;
@@ -187,17 +187,17 @@
 .message-bubble {
   max-width: 85%;
   padding: var(--spacing-md);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   
   .message-ai & {
     background: var(--color-neutral-100);
-    border-bottom-left-radius: 4px;
+    border-bottom-left-radius: 4px; // Slight radius for chat tail effect
   }
 
   .message-user & {
     background: var(--color-primary-500);
-    color: white;
-    border-bottom-right-radius: 4px;
+    color: var(--text-inverse);
+    border-bottom-right-radius: 4px; // Slight radius for chat tail effect
   }
 }
 
@@ -207,8 +207,8 @@
   word-wrap: break-word;
 
   &.status-text {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 0.85rem;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
     line-height: 1.6;
     white-space: pre-line;
     color: var(--text-secondary);
@@ -216,24 +216,24 @@
 }
 
 .message-time {
-  font-size: 10px;
-  margin-top: 4px;
+  font-size: 10px; // Extra small for timestamp
+  margin-top: 4px; // Minimal spacing
   opacity: 0.7;
 }
 
 // Typing indicator (inline with text)
 .typing-dots {
   display: inline-flex;
-  gap: 3px;
-  margin-left: 6px;
+  gap: 3px; // Dot spacing
+  margin-left: 6px; // Space from text
   align-items: center;
   vertical-align: middle;
 
   .dot {
     display: inline-block;
-    width: 6px;
+    width: 6px; // Small typing dot (below theme sizes)
     height: 6px;
-    border-radius: 50%;
+    border-radius: 50%; // Circular dots
     background: var(--color-primary-500);
     animation: typingDot 1.4s infinite;
 
@@ -253,14 +253,14 @@
     opacity: 0.4;
   }
   30% {
-    transform: translateY(-3px);
+    transform: translateY(-3px); // Bounce effect
     opacity: 1;
   }
 }
 
 // Input area
 .chat-input {
-  padding: var(--spacing-lg);
+  padding: var(--spacing-md);
   border-top: 1px solid var(--border-light);
   background: var(--bg-card);
   flex-shrink: 0;
@@ -273,7 +273,7 @@
   padding: var(--spacing-sm);
   background: var(--color-neutral-50);
   border: 1px solid var(--border-light);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   transition: var(--transition-colors);
 
   &:focus-within {
@@ -291,9 +291,9 @@
   color: var(--text-primary);
   resize: none;
   outline: none;
-  min-height: 24px;
-  max-height: 120px;
-  padding: 4px 0;
+  min-height: 24px; // Minimum textarea height
+  max-height: 120px; // Maximum textarea height before scroll
+  padding: 4px 0; // Minimal vertical padding
 
   &::placeholder {
     color: var(--text-quaternary);
@@ -301,11 +301,11 @@
 }
 
 .send-button {
-  width: 36px;
+  width: 36px; // Custom send button size (between icon-md and icon-2xl)
   height: 36px;
   border: none;
   background: var(--color-primary-500);
-  color: white;
+  color: var(--text-inverse);
   border-radius: var(--radius-md);
   cursor: pointer;
   display: flex;
@@ -334,15 +334,15 @@
 // Responsive
 @media (max-width: 1024px) {
   .chat-header {
-    padding: var(--spacing-lg);
+    padding: var(--spacing-md);
   }
 
   .messages-container {
-    padding: var(--spacing-md);
+    padding: var(--spacing-sm);
   }
 
   .chat-input {
-    padding: var(--spacing-md);
+    padding: var(--spacing-sm);
   }
 }
 

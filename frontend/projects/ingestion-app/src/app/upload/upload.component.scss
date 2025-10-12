@@ -27,10 +27,10 @@
 }
 
 .header-icon-wrapper {
-  width: 2rem;
-  height: 2rem;
+  width: var(--icon-xl);
+  height: var(--icon-xl);
   border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, var(--color-primary-500), var(--color-accent-500));
+  background: var(--color-primary-500);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -39,9 +39,11 @@
 }
 
 .header-icon {
-  width: 1rem;
-  height: 1rem;
+  width: var(--icon-sm);
+  height: var(--icon-sm);
   color: var(--text-inverse);
+  display: block;
+  flex-shrink: 0;
 }
 
 .header-text {
@@ -102,13 +104,13 @@ app-upload-progress {
   }
   
   .header-icon-wrapper {
-    width: 2.5rem;
-    height: 2.5rem;
+    width: var(--icon-2xl);
+    height: var(--icon-2xl);
   }
   
   .header-icon {
-    width: 1.25rem;
-    height: 1.25rem;
+    width: var(--icon-md);
+    height: var(--icon-md);
   }
   
   .upload-title {

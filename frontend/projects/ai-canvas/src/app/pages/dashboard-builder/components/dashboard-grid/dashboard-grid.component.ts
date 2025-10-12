@@ -3,13 +3,15 @@
  * Center panel with gridster2 for arranging charts
  */
 
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Subject, takeUntil } from 'rxjs';
 import { GridsterConfig, GridsterItem, GridType, DisplayGrid, CompactType } from 'angular-gridster2';
 import { ChartDataService } from '../../../../services/chart-data.service';
 import { DashboardItem } from '../../../../models/dashboard-item.model';
 import { ChartType } from '../../../../models/chart-type.model';
+import { DashboardStateService } from '../../../../services/dashboard-state.service';
+import { runInZone } from '../../../../utils/zone-operators';
 
 @Component({
   selector: 'app-dashboard-grid',
@@ -22,7 +24,11 @@ export class DashboardGridComponent implements OnInit, OnDestroy {
   dashboardItems: DashboardItem[] = [];
   gridsterOptions: GridsterConfig = {};
 
-  constructor(private chartDataService: ChartDataService) {}
+  constructor(
+    private zone: NgZone,
+    private chartDataService: ChartDataService,
+    private dashboardState: DashboardStateService
+  ) {}
 
   ngOnInit(): void {
     // Configure gridster for 24x24 grid
@@ -49,8 +55,12 @@ export class DashboardGridComponent implements OnInit, OnDestroy {
     };
 
     // Subscribe to dashboard items
+    // Using runInZone to ensure change detection works in Module Federation
     this.chartDataService.dashboardItems$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        runInZone(this.zone),
+        takeUntil(this.destroy$)
+      )
       .subscribe(items => {
         console.log('[DashboardGrid] Dashboard items updated:', items.length);
         this.dashboardItems = items;
@@ -240,6 +250,13 @@ export class DashboardGridComponent implements OnInit, OnDestroy {
    */
   trackByChartId(index: number, item: DashboardItem): string {
     return item.id;
+  }
+
+  /**
+   * Handle save button click
+   */
+  onSaveClick(): void {
+    this.dashboardState.triggerSave();
   }
 }
 

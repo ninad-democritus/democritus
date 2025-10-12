@@ -42,8 +42,8 @@
 }
 
 .file-icon {
-  width: 2rem;
-  height: 2rem;
+  width: var(--icon-xl);
+  height: var(--icon-xl);
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
@@ -169,14 +169,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: var(--icon-lg);
+  height: var(--icon-lg);
   background-color: var(--color-error-100);
   color: var(--color-error-600);
   border: 1px solid var(--color-error-200);
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: var(--transition-colors);
+  flex-shrink: 0;
+  
+  svg {
+    width: var(--icon-sm);
+    height: var(--icon-sm);
+    display: block;
+    flex-shrink: 0;
+  }
   
   &:hover {
     background-color: var(--color-error-500);
@@ -197,8 +205,8 @@
   }
   
   .file-icon {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: var(--icon-lg);
+    height: var(--icon-lg);
   }
   
   .file-name {
@@ -206,8 +214,8 @@
   }
   
   .remove-file-button {
-    width: 24px;
-    height: 24px;
+    width: var(--icon-md);
+    height: var(--icon-md);
   }
 }
 

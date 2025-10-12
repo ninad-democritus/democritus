@@ -26,14 +26,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: var(--icon-2xl);
+  height: var(--icon-2xl);
   background-color: var(--bg-card);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
   cursor: pointer;
   transition: var(--transition-colors), var(--transition-shadow);
   box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
   
   &:hover:not(:disabled) {
     background-color: var(--color-primary-50);
@@ -48,9 +49,11 @@
   }
   
   svg {
-    width: 20px;
-    height: 20px;
+    width: var(--icon-md);
+    height: var(--icon-md);
     color: var(--text-secondary);
+    display: block;
+    flex-shrink: 0;
   }
   
   &.save-btn:not(:disabled) svg {
@@ -118,8 +121,8 @@
   pointer-events: none;
   fill: var(--text-primary);
   font-family: var(--font-sans);
-  font-size: 11px;
-  font-weight: 500;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
 }
 
 // Entity Styles (inline rendering)
@@ -154,8 +157,8 @@
 .entity-title {
   fill: var(--text-inverse);
   font-family: var(--font-sans);
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
   text-anchor: start;
   pointer-events: none;
   letter-spacing: 0.025em;
@@ -164,8 +167,8 @@
 .entity-description {
   fill: var(--text-tertiary);
   font-family: var(--font-sans);
-  font-size: 11px;
-  font-weight: 400;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-normal);
   text-anchor: start;
   pointer-events: none;
   letter-spacing: 0.01em;
@@ -214,8 +217,8 @@
 .column-name {
   fill: var(--text-primary);
   font-family: var(--font-sans);
-  font-size: 12px;
-  font-weight: 500;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
   text-anchor: start;
   pointer-events: none;
   letter-spacing: 0.02em;
@@ -224,19 +227,19 @@
 .column-type {
   fill: var(--text-secondary);
   font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 400;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-normal);
   text-anchor: start;
   pointer-events: none;
   letter-spacing: 0.01em;
 }
 
 .key-icon, .required-icon {
-  font-size: 8px;
+  font-size: var(--spacing-sm); // 8px
   text-anchor: middle;
   dominant-baseline: middle;
   pointer-events: none;
-  fill: white;
+  fill: var(--text-inverse);
 }
 
 // Column Action Buttons - Always Visible
@@ -275,7 +278,7 @@
 .action-icon {
   pointer-events: none;
   fill: none;
-  stroke: white;
+  stroke: var(--text-inverse);
   stroke-width: 2;
 }
 
@@ -290,6 +293,7 @@
 .changes-badge {
   display: flex;
   align-items: center;
+  gap: var(--spacing-xs);
   background-color: var(--color-warning-100);
   color: var(--color-warning-700);
   border: 1px solid var(--color-warning-200);
@@ -301,6 +305,9 @@
   animation: pulse 2s infinite;
   
   svg {
+    width: var(--icon-sm);
+    height: var(--icon-sm);
+    display: block;
     flex-shrink: 0;
   }
 }
@@ -320,12 +327,12 @@
   }
   
   .control-btn {
-    width: 36px;
-    height: 36px;
+    width: var(--icon-xl);
+    height: var(--icon-xl);
     
     svg {
-      width: 18px;
-      height: 18px;
+      width: var(--icon-sm);
+      height: var(--icon-sm);
     }
   }
   
