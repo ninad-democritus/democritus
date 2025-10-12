@@ -1,0 +1,296 @@
+// Main SCSS Entry Point
+// This file orchestrates the theme system and provides a single import point
+
+// ===== THEME IMPORT =====
+// Import the active theme - CHANGE THIS LINE TO SWAP THEMES
+@import 'themes/ocean-breeze';
+
+// Alternative themes (commented out):
+// @import 'themes/dark-mode';
+// @import 'themes/purple-haze';
+// @import 'themes/forest-fresh';
+
+// ===== ABSTRACTIONS =====
+// Import reusable mixins and utilities that work with any theme
+@import 'abstractions/component-mixins';
+
+// ===== BASE STYLES =====
+// Global styles and resets
+* {
+  box-sizing: border-box;
+}
+
+html {
+  @include smooth-scroll;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--text-primary);
+  background-color: var(--bg-page-solid);
+}
+
+// ===== GLOBAL COMPONENT CLASSES =====
+// These classes use the mixins and can be applied anywhere
+
+// Button classes
+.btn {
+  @include button-base;
+}
+
+.btn-primary {
+  @include button-primary;
+}
+
+.btn-secondary {
+  @include button-secondary;
+}
+
+.btn-accent {
+  @include button-accent;
+}
+
+.btn-danger {
+  @include button-danger;
+}
+
+.btn-ghost {
+  @include button-ghost;
+}
+
+// Card classes
+.card {
+  @include card-base;
+}
+
+.card-interactive {
+  @include card-interactive;
+}
+
+.card-content {
+  @include card-content;
+}
+
+.card-header {
+  @include card-header;
+}
+
+.card-footer {
+  @include card-footer;
+}
+
+// Status badge classes
+.badge {
+  @include status-badge-base;
+}
+
+.badge-success {
+  @include status-badge-success;
+}
+
+.badge-error {
+  @include status-badge-error;
+}
+
+.badge-warning {
+  @include status-badge-warning;
+}
+
+.badge-info {
+  @include status-badge-info;
+}
+
+.badge-neutral {
+  @include status-badge-neutral;
+}
+
+// Alert panel classes
+.alert-error {
+  @include error-panel;
+}
+
+.alert-success {
+  @include success-panel;
+}
+
+.alert-warning {
+  @include warning-panel;
+}
+
+.alert-info {
+  @include info-panel;
+}
+
+// Layout classes
+.page-background {
+  @include page-background;
+}
+
+.header {
+  @include header-style;
+}
+
+.sidebar {
+  @include sidebar-style;
+}
+
+// Form classes
+.input {
+  @include input-base;
+  
+  &.input-error {
+    @include input-error;
+  }
+}
+
+// Typography classes
+.heading-1 {
+  @include heading-1;
+}
+
+.heading-2 {
+  @include heading-2;
+}
+
+.heading-3 {
+  @include heading-3;
+}
+
+.body-text {
+  @include body-text;
+}
+
+.caption-text {
+  @include caption-text;
+}
+
+.small-text {
+  @include small-text;
+}
+
+// Progress bar classes
+.progress-bar {
+  @include progress-bar-base;
+  
+  .progress-fill {
+    @include progress-bar-fill('success');
+    
+    &.progress-error {
+      @include progress-bar-fill('error');
+    }
+    
+    &.progress-warning {
+      @include progress-bar-fill('warning');
+    }
+    
+    &.progress-info {
+      @include progress-bar-fill('info');
+    }
+  }
+}
+
+// Loading spinner classes
+.spinner {
+  @include spinner-base;
+  
+  &.spinner-sm {
+    @include spinner-base(0.75rem);
+  }
+  
+  &.spinner-lg {
+    @include spinner-base(1.5rem);
+  }
+  
+  &.spinner-xl {
+    @include spinner-base(2rem);
+  }
+}
+
+// Dropdown classes
+.dropdown {
+  @include dropdown-base;
+}
+
+// Utility classes
+.visually-hidden {
+  @include visually-hidden;
+}
+
+.truncate {
+  @include truncate;
+}
+
+// ===== THEME-AWARE TAILWIND REPLACEMENT CLASSES =====
+// These classes replace common Tailwind patterns with theme-aware versions
+
+// Background classes
+.bg-page { background: var(--bg-page); }
+.bg-page-solid { background-color: var(--bg-page-solid); }
+.bg-card { background-color: var(--bg-card); }
+.bg-header { background-color: var(--bg-header); }
+.bg-success { background-color: var(--bg-success); }
+.bg-error { background-color: var(--bg-error); }
+.bg-warning { background-color: var(--bg-warning); }
+.bg-info { background-color: var(--bg-info); }
+
+// Text color classes
+.text-primary { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-tertiary { color: var(--text-tertiary); }
+.text-inverse { color: var(--text-inverse); }
+.text-success { color: var(--text-success); }
+.text-error { color: var(--text-error); }
+.text-warning { color: var(--text-warning); }
+.text-info { color: var(--text-info); }
+.text-accent { color: var(--text-accent); }
+.text-link { color: var(--text-link); }
+
+// Border classes
+.border-light { border-color: var(--border-light); }
+.border-medium { border-color: var(--border-medium); }
+.border-primary { border-color: var(--border-primary); }
+.border-success { border-color: var(--border-success); }
+.border-error { border-color: var(--border-error); }
+.border-warning { border-color: var(--border-warning); }
+
+// Shadow classes
+.shadow-card { box-shadow: var(--shadow-card); }
+.shadow-hover { box-shadow: var(--shadow-card-hover); }
+.shadow-dropdown { box-shadow: var(--shadow-dropdown); }
+
+// ===== RESPONSIVE UTILITIES =====
+// Add responsive breakpoints if needed
+@media (max-width: 768px) {
+  .card-content {
+    padding: var(--spacing-md);
+  }
+  
+  .heading-1 {
+    font-size: var(--font-size-2xl);
+  }
+  
+  .heading-2 {
+    font-size: var(--font-size-xl);
+  }
+}
+
+// ===== PRINT STYLES =====
+@media print {
+  .page-background {
+    background: white !important;
+  }
+  
+  .card {
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+  }
+}
+

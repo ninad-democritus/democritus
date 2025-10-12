@@ -1,0 +1,130 @@
+// Import shared UI Kit styles
+@import 'ui-kit/src/lib/styles/global-imports';
+
+.app-header {
+  background-color: var(--bg-header, #ffffff);
+  border-bottom: 1px solid var(--border-light, #e5e7eb);
+  box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+  padding: var(--spacing-sm, 0.5rem) var(--spacing-lg, 1.5rem);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header, 999);
+  height: 60px;
+  gap: var(--spacing-md, 1rem);
+}
+
+.header-branding {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 0.5rem);
+  flex-shrink: 0;
+}
+
+.logo-container {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md, 0.5rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--color-primary-500, #3b82f6), var(--color-accent-500, #8b5cf6));
+  box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+  
+  ::ng-deep svg {
+    width: 16px;
+    height: 16px;
+    color: white;
+  }
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.brand-title {
+  font-size: var(--font-size-xl, 1.25rem);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: var(--line-height-tight, 1.25);
+  margin: 0;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-primary-600, #2563eb), var(--color-accent-600, #7c3aed));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.brand-tagline {
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-tertiary, #9ca3af);
+  margin: 0;
+  line-height: 1;
+}
+
+.header-navigation {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 0.5rem);
+  flex-shrink: 0;
+}
+
+// Separator between app actions and global actions
+.actions-separator {
+  width: 1px;
+  height: 24px;
+  background-color: var(--border-light, #e5e7eb);
+  margin: 0 var(--spacing-sm, 0.5rem);
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .app-header {
+    padding: var(--spacing-xs, 0.25rem) var(--spacing-md, 1rem);
+    height: auto;
+    min-height: 60px;
+    flex-wrap: wrap;
+  }
+  
+  .brand-title {
+    font-size: var(--font-size-lg, 1.125rem);
+  }
+  
+  .brand-tagline {
+    display: none;
+  }
+  
+  .header-navigation {
+    flex-basis: 100%;
+    order: 3;
+    justify-content: flex-start;
+    margin-top: var(--spacing-xs, 0.25rem);
+  }
+}
+
+// Print styles
+@media print {
+  .app-header {
+    background: white !important;
+    box-shadow: none !important;
+    border-bottom: 1px solid var(--border-medium, #d1d5db) !important;
+    position: static !important;
+  }
+  
+  .header-actions {
+    display: none !important;
+  }
+}
+
