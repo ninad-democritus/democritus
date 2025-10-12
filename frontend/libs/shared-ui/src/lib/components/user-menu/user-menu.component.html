@@ -1,0 +1,41 @@
+<div class="user-menu-container">
+  <button 
+    class="user-button"
+    (click)="toggleDropdown()"
+    [attr.aria-label]="'User menu for ' + user.name"
+    [attr.aria-expanded]="isOpen"
+    type="button"
+  >
+    <div class="avatar">
+      <span class="avatar-text">{{ user.avatar }}</span>
+    </div>
+  </button>
+
+  <div class="dropdown-panel" *ngIf="isOpen">
+    <!-- User Info Header -->
+    <div class="user-info">
+      <div class="avatar avatar-large">
+        <span class="avatar-text">{{ user.avatar }}</span>
+      </div>
+      <div class="user-details">
+        <p class="user-name">{{ user.name }}</p>
+        <p class="user-email">{{ user.email }}</p>
+      </div>
+    </div>
+
+    <!-- Menu Items -->
+    <div class="menu-items">
+      <button
+        *ngFor="let item of menuItems"
+        class="menu-item"
+        [class.divider-before]="item.divider"
+        (click)="handleMenuItemClick(item)"
+        type="button"
+      >
+        <div class="menu-icon" [innerHTML]="item.icon"></div>
+        <span class="menu-label">{{ item.label }}</span>
+      </button>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,14 @@
+// Global SCSS Imports for UI Kit
+// This file can be imported by any application to get access to all theme variables,
+// mixins, and global styles
+
+// Forward all abstractions (mixins, functions, etc.)
+@forward 'abstractions/component-mixins';
+
+// Forward the active theme - Change this to switch themes globally
+@forward 'themes/ocean-breeze';
+
+// Include the main styles (global classes, utilities, etc.)
+@import 'main';
+
+

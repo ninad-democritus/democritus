@@ -1,0 +1,144 @@
+// Import shared UI Kit styles
+@import 'ui-kit/src/lib/styles/global-imports';
+
+.app-sidebar {
+  width: 70px;
+  height: calc(100vh - 60px);  // Subtract header height
+  position: fixed;
+  left: 0;
+  top: 60px;  // Start after header
+  background: var(--bg-sidebar, #ffffff);
+  border-right: 1px solid var(--border-light, #e5e7eb);
+  box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+  z-index: var(--z-sidebar, 1000);
+  display: flex;
+  flex-direction: column;  
+  overflow-y: auto;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 8px;
+  gap: 8px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  border-left: 3px solid transparent;
+  
+  &:focus {
+    outline: 2px solid var(--color-primary-500, #3b82f6);
+    outline-offset: -2px;
+  }
+  
+  .icon-container {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary, #6b7280);
+    transition: color 0.2s ease;
+    
+    ::ng-deep svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  
+  .label {
+    font-size: 11px;
+    font-weight: var(--font-weight-medium, 500);
+    color: var(--text-secondary, #6b7280);
+    text-align: center;
+    transition: color 0.2s ease, font-weight 0.2s ease;
+    line-height: 1.2;
+  }
+  
+  &:hover {
+    background: var(--color-primary-50, #eff6ff);
+    
+    .icon-container,
+    .label {
+      color: var(--color-primary-600, #2563eb);
+    }
+  }
+  
+  &.active {
+    background: var(--color-primary-100, #dbeafe);
+    border-left-color: var(--color-primary-600, #2563eb);
+    
+    .icon-container,
+    .label {
+      color: var(--color-primary-600, #2563eb);
+      font-weight: var(--font-weight-semibold, 600);
+    }
+  }
+}
+
+// Scrollbar styling for sidebar
+.app-sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.app-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.app-sidebar::-webkit-scrollbar-thumb {
+  background: var(--color-primary-300, #93c5fd);
+  border-radius: 2px;
+}
+
+.app-sidebar::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-400, #60a5fa);
+}
+
+// Mobile responsive - convert to bottom navigation
+@media (max-width: 768px) {
+  .app-sidebar {
+    width: 100%;
+    height: 60px;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    flex-direction: row;
+    padding: 0;
+    border-right: none;
+    border-top: 1px solid var(--border-light, #e5e7eb);
+    z-index: var(--z-sidebar, 1000);
+  }
+  
+  .nav-item {
+    flex: 1;
+    padding: 8px 4px;
+    border-left: none;
+    border-top: 3px solid transparent;
+    
+    &.active {
+      border-left: none;
+      border-top-color: var(--color-primary-600, #2563eb);
+    }
+    
+    .icon-container {
+      width: 24px;
+      height: 24px;
+    }
+    
+    .label {
+      font-size: 10px;
+    }
+  }
+}
+
+// Print styles
+@media print {
+  .app-sidebar {
+    display: none !important;
+  }
+}
+

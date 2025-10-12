@@ -1,0 +1,29 @@
+<header class="app-header">
+  <!-- Left: Branding -->
+  <div class="header-branding">
+    <div class="logo-container" [innerHTML]="getLogoSvg()"></div>
+    <div class="brand-text">
+      <h1 class="brand-title gradient-text">Democritus</h1>
+      <p class="brand-tagline">AI-Powered Data Platform</p>
+    </div>
+  </div>
+
+  <!-- Middle: App Navigation (optional via content projection) -->
+  <div class="header-navigation">
+    <ng-content select="[appNavigation]"></ng-content>
+  </div>
+
+  <!-- Right: Actions (app-specific first, then global) -->
+  <div class="header-actions">
+    <!-- App-specific actions FIRST (left side of actions) -->
+    <ng-content select="[headerActions]"></ng-content>
+    
+    <!-- Visual separator (optional) -->
+    <div class="actions-separator"></div>
+    
+    <!-- Global actions AFTER (right side of actions) -->
+    <lib-notifications></lib-notifications>
+    <lib-user-menu></lib-user-menu>
+  </div>
+</header>
+

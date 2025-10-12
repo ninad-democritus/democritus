@@ -1,0 +1,54 @@
+<div class="notifications-container">
+  <button 
+    class="notification-button"
+    (click)="toggleDropdown()"
+    [attr.aria-label]="'Notifications' + (unreadCount > 0 ? ' (' + unreadCount + ' unread)' : '')"
+    [attr.aria-expanded]="isOpen"
+    type="button"
+  >
+    <div class="icon-wrapper" [innerHTML]="getBellIcon()"></div>
+    <span *ngIf="unreadCount > 0" class="badge">{{ unreadCount }}</span>
+  </button>
+
+  <div class="dropdown-panel" *ngIf="isOpen" [@slideDown]>
+    <div class="dropdown-header">
+      <h3 class="dropdown-title">Notifications</h3>
+      <button 
+        *ngIf="unreadCount > 0"
+        class="mark-all-read"
+        (click)="markAllAsRead()"
+        type="button"
+      >
+        Mark all as read
+      </button>
+    </div>
+
+    <div class="notifications-list">
+      <div 
+        *ngFor="let notification of notifications"
+        class="notification-item"
+        [class.unread]="!notification.read"
+        [class.success]="notification.type === 'success'"
+        [class.warning]="notification.type === 'warning'"
+        [class.error]="notification.type === 'error'"
+        [class.info]="notification.type === 'info'"
+        (click)="markAsRead(notification)"
+      >
+        <div class="notification-indicator"></div>
+        <div class="notification-content">
+          <p class="notification-message">{{ notification.message }}</p>
+          <span class="notification-time">{{ notification.time }}</span>
+        </div>
+      </div>
+
+      <div *ngIf="notifications.length === 0" class="empty-state">
+        <p>No notifications</p>
+      </div>
+    </div>
+
+    <div class="dropdown-footer">
+      <a href="#" class="view-all-link">View all notifications</a>
+    </div>
+  </div>
+</div>
+
