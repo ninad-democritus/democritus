@@ -1,17 +1,39 @@
+# ============================================
+# Requirements - Agent Workflow Service
+# All versions aligned across services
+# ============================================
+
+# Web Framework
 fastapi==0.114.2
 uvicorn[standard]==0.30.6
+
+# Async Task Processing
 celery==5.4.0
 redis==5.0.7
+
+# WebSocket
 websockets==12.0
-pydantic>=2.6.0,<3.0.0  # Aligned with other services
+
+# Data Validation - ALIGNED ACROSS ALL SERVICES
+# PyIceberg 0.7.1 (Feb 2024) requires pydantic 2.5.x-2.7.x (not 2.12+)
+# Pydantic 2.8+ changed validator API breaking PyIceberg 0.7.1
+pydantic>=2.5.0,<2.8.0
+pydantic-core>=2.14.0,<2.19.0
+annotated-types>=0.6.0
+typing-extensions>=4.6.0
+
+# LLM & Workflow
 langchain==0.2.16
 langchain-community==0.2.16
 langgraph==0.2.26
 langsmith==0.1.121
-minio==7.2.10
+
+# Data Processing
 pandas==2.1.4
 openpyxl==3.1.2
-# Loosen DataHub pin to resolve availability issues on PyPI across platforms
-acryl-datahub>=0.13,<0.15
 
+# Storage
+minio==7.2.10
 
+# Metadata Client
+acryl-datahub==0.14.1.12
