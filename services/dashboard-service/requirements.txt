@@ -1,12 +1,22 @@
+# ============================================
+# Requirements - Dashboard Service
+# All versions aligned across services
+# ============================================
+
 # Web Framework
 fastapi==0.114.2
 uvicorn[standard]==0.30.6
 
-# Data Validation
-pydantic>=2.6.0,<3.0.0
+# Data Validation - ALIGNED ACROSS ALL SERVICES
+# PyIceberg 0.7.1 (Feb 2024) requires pydantic 2.5.x-2.7.x (not 2.12+)
+# Pydantic 2.8+ changed validator API breaking PyIceberg 0.7.1
+pydantic>=2.5.0,<2.8.0
+pydantic-core>=2.14.0,<2.19.0
 pydantic-settings==2.4.0
+annotated-types>=0.6.0
+typing-extensions>=4.6.0
 
-# Database
+# Database & ORM
 sqlalchemy==2.0.25
 psycopg2-binary==2.9.9
 alembic==1.13.1
@@ -21,4 +31,3 @@ python-json-logger==2.0.7
 # Testing
 pytest==8.3.3
 pytest-asyncio==0.24.0
-
