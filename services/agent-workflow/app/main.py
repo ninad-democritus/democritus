@@ -15,6 +15,11 @@ logger = logging.getLogger(__name__)
 redis_url = os.getenv("REDIS_URL", "redis://redis:6379/0")
 celery_app = Celery("agent_workflow", broker=redis_url, backend=redis_url)
 
+# Configure Celery for Celery 6.0+ compatibility
+celery_app.conf.update(
+    broker_connection_retry_on_startup=True,
+)
+
 
 class StartWorkflowRequest(BaseModel):
   fileId: str
