@@ -204,6 +204,12 @@ services:
       - trino
       - openmetadata-server
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "celery -A app.tasks:celery_app inspect ping -d celery@$$HOSTNAME"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   # Dashboard Service
   dashboard-service:
