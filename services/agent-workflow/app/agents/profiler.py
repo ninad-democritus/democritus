@@ -6,6 +6,8 @@ import io
 import os
 import logging
 from dataclasses import dataclass
+from dataprofiler import Profiler, Data
+
 try:
     from ..observability import trace_agent, observability
 except ImportError:
@@ -28,14 +30,12 @@ logger = logging.getLogger(__name__)
 class ColumnProfile:
     name: str
     data_type: str
+    semantic_type: str
     null_count: int
     total_count: int
     null_percentage: float
     distinct_count: int
-    sample_values: List[Any]
-    min_value: Any = None
-    max_value: Any = None
-    mean_value: Any = None
+    nullable: bool
 
 @dataclass
 class FileProfile:
@@ -45,15 +45,18 @@ class FileProfile:
     column_count: int
     columns: List[ColumnProfile]
     file_size_bytes: int
+    profile_method: str = "dataprofiler"
 
 class ProfilerAgent:
     """
-    Profiler Agent: Downloads files from MinIO and analyzes them to identify columns,
-    infer data types, and calculate basic statistics.
+    Profiler Agent: Downloads files from MinIO and analyzes them using DataProfiler
+    to identify columns, infer data types, detect semantic types, and calculate statistics.
     """
     
     def __init__(self):
         self.minio_client = self._get_minio_client()
+        self.max_rows = int(os.environ.get("DATAPROFILER_MAX_ROWS", "10000"))
+        self.sample_size = int(os.environ.get("DATAPROFILER_SAMPLE_SIZE", "10000"))
         
     def _get_minio_client(self) -> Minio:
         endpoint = os.environ.get("MINIO_ENDPOINT", "minio:9000")
@@ -112,7 +115,7 @@ class ProfilerAgent:
         return file_profiles
     
     def _profile_file(self, bucket: str, object_name: str) -> FileProfile:
-        """Profile a single file"""
+        """Profile a single file using DataProfiler"""
         try:
             # Download file
             response = self.minio_client.get_object(bucket, object_name)
@@ -131,19 +134,23 @@ class ProfilerAgent:
             else:
                 raise ValueError(f"Unsupported file type: {file_name}")
             
-            # Profile each column
-            column_profiles = []
-            for col in df.columns:
-                profile = self._profile_column(df, col)
-                column_profiles.append(profile)
+            # Store original row count
+            original_row_count = len(df)
+            
+            # Sample DataFrame if it's too large
+            df_sampled = self._sample_dataframe(df)
+            
+            # Profile with DataProfiler
+            column_profiles = self._profile_with_dataprofiler(df_sampled, file_name)
             
             return FileProfile(
                 file_name=file_name,
                 file_id=file_id,
-                row_count=len(df),
+                row_count=original_row_count,
                 column_count=len(df.columns),
                 columns=column_profiles,
-                file_size_bytes=file_size
+                file_size_bytes=file_size,
+                profile_method="dataprofiler"
             )
             
         except Exception as e:
@@ -152,88 +159,118 @@ class ProfilerAgent:
         finally:
             response.close()
     
-    def _profile_column(self, df: pd.DataFrame, column_name: str) -> ColumnProfile:
-        """Profile a single column"""
-        series = df[column_name]
+    def _sample_dataframe(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Sample DataFrame if it exceeds max_rows threshold"""
+        if len(df) > self.max_rows:
+            logger.info(f"Sampling {self.sample_size} rows from {len(df)} total rows")
+            return df.sample(n=min(self.sample_size, len(df)), random_state=42)
+        return df
+    
+    def _profile_with_dataprofiler(self, df: pd.DataFrame, file_name: str) -> List[ColumnProfile]:
+        """Profile DataFrame using DataProfiler library"""
+        try:
+            # Create Data object and profile
+            data = Data(df)
+            profiler = Profiler(data)
+            report = profiler.report()
+            
+            column_profiles = []
+            
+            # Extract column statistics from report
+            for column_stats in report.get("data_stats", []):
+                col_profile = self._build_column_profile(column_stats, len(df))
+                column_profiles.append(col_profile)
+            
+            return column_profiles
+            
+        except Exception as e:
+            logger.error(f"DataProfiler failed for {file_name}: {e}")
+            raise
+    
+    def _build_column_profile(self, column_stats: Dict[str, Any], total_count: int) -> ColumnProfile:
+        """Build ColumnProfile from DataProfiler column statistics"""
         
-        # Basic stats
-        total_count = len(series)
-        null_count = series.isnull().sum()
-        null_percentage = (null_count / total_count) * 100 if total_count > 0 else 0
-        distinct_count = series.nunique()
+        # Extract basic information
+        column_name = column_stats.get("column_name", "unknown")
+        data_type = column_stats.get("data_type", "unknown")
         
-        # Infer data type
-        data_type = self._infer_data_type(series)
+        # Extract semantic type (first from list, or "unknown")
+        semantic_type = self._extract_semantic_type(column_stats)
         
-        # Sample values (non-null)
-        non_null_series = series.dropna()
-        sample_size = min(5, len(non_null_series))
-        sample_values = non_null_series.head(sample_size).tolist()
+        # Extract statistics
+        statistics = column_stats.get("statistics", {})
+        null_count = statistics.get("null_count", 0)
+        distinct_count = statistics.get("unique_count", 0)
         
-        # Numeric statistics
-        min_value = None
-        max_value = None
-        mean_value = None
+        # Calculate null percentage
+        null_percentage = (null_count / total_count * 100) if total_count > 0 else 0.0
         
-        if data_type in ['integer', 'float', 'numeric']:
-            try:
-                numeric_series = pd.to_numeric(series, errors='coerce').dropna()
-                if not numeric_series.empty:
-                    min_value = float(numeric_series.min())
-                    max_value = float(numeric_series.max())
-                    mean_value = float(numeric_series.mean())
-            except Exception:
-                pass
+        # Predict nullable
+        nullable = self._predict_nullable(column_stats, column_name, null_count, distinct_count, total_count, semantic_type)
         
         return ColumnProfile(
             name=column_name,
             data_type=data_type,
+            semantic_type=semantic_type,
             null_count=int(null_count),
             total_count=total_count,
             null_percentage=round(null_percentage, 2),
-            distinct_count=distinct_count,
-            sample_values=sample_values,
-            min_value=min_value,
-            max_value=max_value,
-            mean_value=mean_value
+            distinct_count=int(distinct_count),
+            nullable=nullable
         )
     
-    def _infer_data_type(self, series: pd.Series) -> str:
-        """Infer the data type of a pandas Series"""
-        # Remove nulls for type inference
-        non_null_series = series.dropna()
+    def _extract_semantic_type(self, column_stats: Dict[str, Any]) -> str:
+        """Extract the first semantic type from DataProfiler results"""
+        semantic_types = column_stats.get("data_label", [])
         
-        if non_null_series.empty:
-            return 'unknown'
+        if isinstance(semantic_types, list) and len(semantic_types) > 0:
+            return semantic_types[0]
         
-        # Check if it's numeric
-        try:
-            numeric_series = pd.to_numeric(non_null_series, errors='coerce')
-            if not numeric_series.isnull().any():
-                # Check if it's integer
-                if (numeric_series % 1 == 0).all():
-                    return 'integer'
-                else:
-                    return 'float'
-        except Exception:
-            pass
+        return "unknown"
+    
+    def _predict_nullable(
+        self, 
+        column_stats: Dict[str, Any],
+        column_name: str, 
+        null_count: int,
+        distinct_count: int,
+        total_count: int,
+        semantic_type: str
+    ) -> bool:
+        """
+        Predict whether a column should be nullable based on data characteristics
+        and semantic meaning.
+        """
         
-        # Check if it's datetime
-        try:
-            pd.to_datetime(non_null_series, errors='raise')
-            return 'datetime'
-        except Exception:
-            pass
+        # If column has nulls, it's clearly nullable
+        if null_count > 0:
+            return True
         
-        # Check if it's boolean
-        unique_values = set(str(v).lower() for v in non_null_series.unique())
-        if unique_values.issubset({'true', 'false', '1', '0', 'yes', 'no', 't', 'f', 'y', 'n'}):
-            return 'boolean'
+        # Check semantic type for fields that are typically optional
+        optional_semantic_types = [
+            "email", "phone_number", "ssn", "credit_card",
+            "middle_name", "secondary", "alternate", "optional"
+        ]
         
-        # Check if it looks like an ID
-        if series.name and any(keyword in series.name.lower() for keyword in ['id', '_id', 'key', '_key']):
-            if non_null_series.nunique() / len(non_null_series) > 0.95:  # High uniqueness
-                return 'identifier'
+        if semantic_type.lower() in optional_semantic_types:
+            return True
         
-        # Default to string
-        return 'string'
+        # Check column name for optional indicators
+        optional_name_keywords = [
+            "optional", "alt", "alternate", "secondary", "middle",
+            "suffix", "prefix", "nickname", "maiden"
+        ]
+        
+        if any(keyword in column_name.lower() for keyword in optional_name_keywords):
+            return True
+        
+        # Check if it looks like a primary key (high uniqueness, no nulls)
+        # Primary keys should not be nullable
+        if distinct_count == total_count and total_count > 0:
+            # Possible primary key pattern
+            pk_indicators = ["id", "_id", "key", "_key", "uuid", "guid"]
+            if any(indicator in column_name.lower() for indicator in pk_indicators):
+                return False
+        
+        # Default to nullable for safety (most columns accept nulls)
+        return True

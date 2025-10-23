@@ -8,9 +8,11 @@ import os
 from datetime import datetime
 
 from .agents.profiler import ProfilerAgent, FileProfile
-from .agents.aligner import AlignerAgent, Entity
+from .agents.aligner import AlignerAgent, CanonicalEntity
 from .agents.architect import ArchitectAgent
 from .agents.tagger import TaggerAgent
+from .agents.glossary import GlossaryAgent
+from .agents.context import ContextAgent
 try:
     from .observability import trace_workflow_step, observability
 except ImportError:
@@ -34,7 +36,7 @@ class WorkflowState:
     status: str
     current_step: str
     file_profiles: List[FileProfile] = None
-    entities: List[Entity] = None
+    entities: List[CanonicalEntity] = None
     schema: Dict[str, Any] = None
     enriched_schema: Dict[str, Any] = None
     error_message: str = None
@@ -42,7 +44,7 @@ class WorkflowState:
 class AgentWorkflow:
     """
     LangGraph-style workflow orchestrator for the multi-agent schema generation pipeline.
-    Coordinates Profiler -> Aligner -> Architect -> Tagger agents.
+    Coordinates Profiler -> Aligner -> Architect -> Tagger -> Glossary -> Context agents.
     """
     
     def __init__(self):
@@ -50,6 +52,8 @@ class AgentWorkflow:
         self.aligner = AlignerAgent()
         self.architect = ArchitectAgent()
         self.tagger = TaggerAgent()
+        self.glossary = GlossaryAgent()
+        self.context = ContextAgent(llm_service=self.glossary.llm_service)
         
         # Redis for WebSocket communication
         redis_url = os.getenv("REDIS_URL", "redis://redis:6379/0")
@@ -90,8 +94,16 @@ class AgentWorkflow:
             await self._update_status(state, "TAGGING", "Tagger agent enriching with business context")
             state = await self._run_tagger_step(state)
             
-            # Step 5: Final validation
-            await self._update_status(state, "PENDING_VALIDATION", "Schema ready for user review", 
+            # Step 5: Glossary Agent
+            await self._update_status(state, "GLOSSARY_BUILDING", "Glossary agent generating business glossary")
+            state = await self._run_glossary_step(state)
+            
+            # Step 6: Context Agent
+            await self._update_status(state, "CONTEXT_GENERATION", "Context agent generating business narratives")
+            state = await self._run_context_step(state)
+            
+            # Step 7: Final validation
+            await self._update_status(state, "PENDING_VALIDATION", "Schema with narratives ready for user review", 
                                     include_schema=True)
             state.status = "PENDING_VALIDATION"
             
@@ -105,7 +117,9 @@ class AgentWorkflow:
                 "status": "PENDING_VALIDATION",
                 "entities_generated": len(state.enriched_schema.get('entities', [])),
                 "relationships_identified": len(state.enriched_schema.get('relationships', [])),
-                "business_tags_applied": len(state.enriched_schema.get('businessTags', {}))
+                "business_tags_applied": len(state.enriched_schema.get('classification_summary', {}).get('classification_distribution', {})),
+                "glossaries_generated": len(state.enriched_schema.get('glossaries', [])),
+                "glossary_terms": state.enriched_schema.get('glossary_summary', {}).get('total_terms', 0)
             }
             
             observability.log_workflow_metrics(job_id, workflow_id, final_metrics)
@@ -204,6 +218,45 @@ class AgentWorkflow:
         state.current_step = "tagging_complete"
         
         logger.info(f"Enriched schema with business tags for job {state.job_id}")
+        return state
+    
+    @trace_workflow_step("glossary", {"component": "glossary_agent"})
+    async def _run_glossary_step(self, state: WorkflowState) -> WorkflowState:
+        """Execute the Glossary Agent step"""
+        logger.info(f"Running Glossary Agent for job {state.job_id}")
+        
+        if not state.enriched_schema:
+            raise ValueError("No enriched schema available for glossary generation")
+        
+        # Generate glossary from enriched schema
+        glossary_output = self.glossary.generate_glossary(state.enriched_schema)
+        
+        # Add glossary to enriched schema (additive, preserves everything)
+        state.enriched_schema['glossaries'] = glossary_output['glossaries']
+        state.enriched_schema['glossary_summary'] = glossary_output['metadata_summary']
+        state.current_step = "glossary_complete"
+        
+        logger.info(f"Generated {len(glossary_output['glossaries'])} glossaries with "
+                   f"{glossary_output['metadata_summary']['total_terms']} terms for job {state.job_id}")
+        return state
+    
+    @trace_workflow_step("context", {"component": "context_agent"})
+    async def _run_context_step(self, state: WorkflowState) -> WorkflowState:
+        """Execute the Context Agent step"""
+        logger.info(f"Running Context Agent for job {state.job_id}")
+        
+        if not state.enriched_schema:
+            raise ValueError("No enriched schema available for context generation")
+        
+        # Generate context narratives (returns minimal format by default)
+        context_output = self.context.generate_context(state.enriched_schema)
+        
+        # Replace enriched schema with context-enriched minimal schema
+        state.enriched_schema = context_output
+        state.current_step = "context_complete"
+        
+        logger.info(f"Generated context for {len(context_output.get('entities', []))} entities, "
+                   f"{context_output.get('summary', {}).get('totalColumns', 0)} columns for job {state.job_id}")
         return state
     
     async def _update_status(self, state: WorkflowState, status: str, message: str, 
